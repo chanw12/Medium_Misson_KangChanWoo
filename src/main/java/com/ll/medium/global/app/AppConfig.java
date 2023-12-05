@@ -23,7 +23,7 @@ public class AppConfig {
     @Getter
     public static String siteBaseUrl;
 
-    @Value("${custom.tempDirPath}")
+    @Value("/Users/chanw12/Documents/temp")
     public void setTempDirPath(String tempDirPath) {
         AppConfig.tempDirPath = tempDirPath;
     }
