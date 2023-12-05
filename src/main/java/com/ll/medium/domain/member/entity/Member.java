@@ -2,10 +2,7 @@ package com.ll.medium.domain.member.entity;
 
 import com.ll.medium.global.jpa.BaseEntity;
 import jakarta.persistence.Entity;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 @Entity
@@ -13,7 +10,8 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString(callSuper = true)
-public class member extends BaseEntity {
+@Getter
+public class Member extends BaseEntity {
 
     private String username;
     private String password;
