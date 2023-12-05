@@ -4,6 +4,6 @@
 	const { children } = $props();
 </script>
 
-<div class="app">
+<div data-theme="light" class="app">
 	{@render children()}
 </div>
