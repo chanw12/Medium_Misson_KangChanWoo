@@ -4,7 +4,12 @@
     let repositories = $state([]);
 
     async function fetchRepositories(){
-        const response = await fetch(`https://api.github.com/users/${username}/repos?sort=updated&per_page=15`);
+        const res = await fetch('https://localhost:8090/api/member/join', {
+            method: 'POST',
+            body: JSON.stringify({
+
+            })
+        })
         repositories = await response.json();
     }
 

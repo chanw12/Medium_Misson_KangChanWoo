@@ -28,10 +28,18 @@ public class MemberController {
         if(!memberJoinForm.getPassword().equals(memberJoinForm.getPasswordconfirm())){
            return ResponseEntity.badRequest().body(RsData.of("400","비밀번호와 비밀번호 확인이 일치하지 않습니다.",null));
         }
+
         Member member = Member.builder().username(memberJoinForm.getUsername()).password(passwordEncoder.encode(memberJoinForm.getPassword())).build();
-        memberService.create(member);
+        if(memberService.isEmpty(member)){
+            memberService.create(member);
+        }else{
+            return ResponseEntity.badRequest().body(RsData.of("400","이미 존재하는 아이디 입니다.",null));
+        }
         return ResponseEntity.ok().body(RsData.of("200","회원가입이 완료되었습니다.",new MemberDto(member)));
     }
+
+
+
 
 
 

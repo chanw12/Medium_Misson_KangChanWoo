@@ -17,6 +17,8 @@ import java.util.List;
 @Getter
 public class Member extends BaseEntity {
 
+
+
     private String username;
     private String password;
     private String email;

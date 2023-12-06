@@ -11,7 +11,12 @@ public class MemberService {
     private final MemberRepository memberRepository;
 
     public void create(Member member){
-        memberRepository.save(member);
+         memberRepository.save(member);
+
+    }
+
+    public Boolean isEmpty(Member member){
+        return memberRepository.findByUserName(member.getUsername()).isEmpty();
     }
 
 }
