@@ -5,7 +5,7 @@
 
     let title = $state('')
     let body = $state('')
-    let isPublished = $state('')
+    let published = $state('')
     let cookieValue = $state('')
     onMount(() => {
         // 쿠키 읽기 함수 호출
@@ -29,7 +29,7 @@
     async function fetchWrite() {
         const res = await axios.post('http://localhost:8090/api/post/write',
         {
-            title,body,isPublished
+            title,body,published
         },
         {
             headers: {
@@ -53,6 +53,11 @@
         return '';
     }
 
+    function handleCheckboxChange(event) {
+        published = event.target.checked;
+        console.log('체크 여부:', published);
+    }
+
 
 
 </script>
@@ -66,7 +71,7 @@
     <form class="p-5" on:submit|preventDefault={fetchWrite}>
         <input bind:value={title} type="text" class="input input-bordered input-sm w-full max-w-xs" />
         <textarea bind:value={body}/>
-        <input type="checkbox" bind:value={isPublished}/>
+        <input type="checkbox" bind:value={published}  on:change={handleCheckboxChange} />
         <button type="submit">로그인</button>
     </form>
 
