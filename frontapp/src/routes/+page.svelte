@@ -17,13 +17,12 @@
 	}
 
 	async function fetchHelo1(){
-		const res = await axios.get('http://localhost:8090/api/member/user')
-				.then(res =>{
-					console.log(res.data);
-				})
-				.catch(error =>{
-					errorMsg = error.response.data.msg;
-				})
+		const res = await axios.get('http://localhost:8090/api/member/user',{
+				headers: {
+			Authorization: `Bearer ${cookies.get('accessJwtToken')}`
+		}
+	})
+
 
 	}
 

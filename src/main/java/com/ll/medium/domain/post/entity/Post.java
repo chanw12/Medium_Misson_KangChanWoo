@@ -17,13 +17,15 @@ import lombok.experimental.SuperBuilder;
 public class Post extends BaseEntity {
     private String title;
 
+
     @ManyToOne
     private Member author;
 
     @Column(columnDefinition = "LONGTEXT")
     private String body;
 
-    private boolean isPublic;
+    @Column(name = "isPublished")
+    private boolean isPublished;
 
 //    @OneToMany(mappedBy = "post", orphanRemoval = true, cascade = {CascadeType.ALL})
 //    @Builder.Default

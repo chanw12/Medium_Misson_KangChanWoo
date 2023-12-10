@@ -1,5 +1,4 @@
 <script>
-    import {data} from "autoprefixer";
     import axios from "axios";
     import {Cookies} from 'react-cookie';
     const cookies = new Cookies();
@@ -28,7 +27,10 @@
                 // }
                 jwtToken = res.data.token;
                 console.log(jwtToken);
-                cookies.set("accessJwtToken",jwtToken);
+                cookies.set("accessJwtToken",jwtToken,{
+                    path: '/', // 모든 경로에 적용
+                });
+
 
             })
             .catch(error =>{

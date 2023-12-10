@@ -1,5 +1,6 @@
 package com.ll.medium.domain.member.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ll.medium.domain.authority.entity.Authority;
 import com.ll.medium.domain.post.entity.Post;
 import com.ll.medium.global.jpa.BaseEntity;
@@ -25,6 +26,7 @@ public class Member extends BaseEntity {
     private String email;
     private String nickname;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "author")
     private List<Post> postList;
 

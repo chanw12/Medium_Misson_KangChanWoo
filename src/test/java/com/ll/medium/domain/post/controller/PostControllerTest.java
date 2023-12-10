@@ -1,9 +1,10 @@
-package com.ll.medium.domain.member.controller;
+package com.ll.medium.domain.post.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ll.medium.domain.member.form.MemberJoinForm;
-import com.ll.medium.domain.member.repository.MemberRepository;
-import com.ll.medium.domain.member.service.MemberService;
+import com.ll.medium.domain.post.form.PostWriteForm;
+import com.ll.medium.domain.post.repository.PostRepository;
+import com.ll.medium.domain.post.service.PostService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -24,58 +25,39 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 @Transactional
-class MemberControllerTest {
+class PostControllerTest {
+
 
     @MockBean
-    private MemberService memberService;
+    private PostService postService;
 
     @Mock
-    private MemberRepository memberRepository;
+    private PostRepository postRepository;
 
     @Autowired
     MockMvc mockMvc;
 
     @Autowired
     ObjectMapper objectMapper;
+
     @Test
     @DisplayName("/api/member/join")
     void join() throws Exception {
 
 
-        MemberJoinForm memberJoinForm = new MemberJoinForm();
-        memberJoinForm.setUsername("testUser");
-        memberJoinForm.setPassword("testPassword");
-        memberJoinForm.setPasswordconfirm("testPassword");
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/member/join")
+        PostWriteForm postWriteForm = new PostWriteForm();
+        postWriteForm.setTitle("testTitle");
+        postWriteForm.setBody("testBody");
+        postWriteForm.setPublished(true);
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/post/write")
                         .contentType(MediaType.APPLICATION_JSON)
+                        .headers()
                         .content(objectMapper.writeValueAsString(memberJoinForm)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.resultCode").value("200"))
                 .andExpect(jsonPath("$.msg").value("회원가입이 완료되었습니다."));
-
-
-
-    }
-
-    @Test
-    @DisplayName("/api/member/join - 비밀번호와 비밀번호 확인이 같지 않을때")
-    void joinError() throws Exception {
-
-
-        MemberJoinForm memberJoinForm = new MemberJoinForm();
-        memberJoinForm.setUsername("testUser");
-        memberJoinForm.setPassword("testPassword");
-        memberJoinForm.setPasswordconfirm("testPasswor");
-
-
-
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/member/join")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(memberJoinForm)))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.resultCode").value("400"))
-                .andExpect(jsonPath("$.msg").value("비밀번호와 비밀번호 확인이 일치하지 않습니다."));
 
 
 
