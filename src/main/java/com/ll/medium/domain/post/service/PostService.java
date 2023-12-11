@@ -53,4 +53,11 @@ public class PostService {
     public List<Post> getHomeList() {
         return postRepository.getHomeList();
     }
+
+    public void modify(Long id,PostWriteForm postWriteForm) {
+        Post post = postRepository.findById(id).orElseThrow(NoSuchElementException::new);
+        post.setBody(postWriteForm.getBody());
+        post.setTitle(postWriteForm.getTitle());
+        post.setPublished(postWriteForm.isPublished());
+    }
 }

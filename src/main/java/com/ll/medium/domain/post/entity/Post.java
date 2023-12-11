@@ -14,10 +14,10 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString(callSuper = true)
 @Getter
+@Setter
 public class Post extends BaseEntity {
+    @Column
     private String title;
-
-
     @ManyToOne
     private Member author;
 

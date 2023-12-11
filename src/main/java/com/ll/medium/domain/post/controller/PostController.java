@@ -26,7 +26,7 @@ public class PostController {
     }
 
     //글 상세 내용 조회
-    @GetMapping("/api/post/post/{id}")
+    @GetMapping("/api/post/{id}")
     public ResponseEntity<?> detail(@PathVariable("id") Long id){
         return ResponseEntity.ok(postService.getPost(id));
     }
@@ -35,6 +35,11 @@ public class PostController {
     @DeleteMapping("/api/post/{id}/delete")
     public ResponseEntity<?> delete(@PathVariable("id") Long id){
         postService.delete(id);
+        return ResponseEntity.ok().build();
+    }
+    @PostMapping("/api/post/{id}/modify")
+    public ResponseEntity<?> modify(@PathVariable("id") Long id,@RequestBody PostWriteForm postWriteForm){
+        postService.modify(id,postWriteForm);
         return ResponseEntity.ok().build();
     }
 
@@ -53,5 +58,6 @@ public class PostController {
     public ResponseEntity<?> gethomelist(){
         return ResponseEntity.ok(postService.getHomeList());
     }
+
 
 }

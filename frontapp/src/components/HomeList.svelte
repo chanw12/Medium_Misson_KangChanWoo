@@ -20,61 +20,15 @@
     };
 
 </script>
-
+<div class="flex-row">
+    <div class="absolute top-20 right-8">
+        <a href="http://localhost:5173/post/write" class="btn btn-primary">글 작성</a>
+    </div>
 <div class="overflow-x-auto">
-<!--    <table class="table">-->
-<!--        &lt;!&ndash; head &ndash;&gt;-->
-<!--        <thead>-->
-<!--        <tr>-->
-<!--            <th>-->
-<!--                <label>-->
-<!--                    <input type="checkbox" class="checkbox" />-->
-<!--                </label>-->
-<!--            </th>-->
-<!--            <th>Author</th>-->
-<!--            <th>Title</th>-->
-<!--            <th>CreateDate</th>-->
-<!--            <th></th>-->
-<!--        </tr>-->
-<!--        </thead>-->
 
-<!--        <tbody>-->
-<!--        {#each homeList as item}-->
-<!--        &lt;!&ndash; row 1 &ndash;&gt;-->
-<!--        <tr>-->
-<!--            <th>-->
-<!--            </th>-->
-<!--            <td>-->
-<!--                <div class="flex items-center gap-3">-->
-<!--                    <div>-->
-<!--                        <div class="font-bold">{item.author.username}</div>-->
-<!--&lt;!&ndash;                        <div class="text-sm opacity-50">United States</div>&ndash;&gt;-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </td>-->
-<!--            <td>-->
-<!--                {item.title}-->
-<!--                <br/>-->
-<!--&lt;!&ndash;&lt;!&ndash;                <span class="badge badge-ghost badge-sm">Desktop Support Technician</span>&ndash;&gt; 태그를 넣을꺼면 여기에다&ndash;&gt;-->
-<!--            </td>-->
-<!--            <td>{item.createDate}</td>-->
 
-<!--        </tr>-->
-<!--        {/each}-->
-<!--        </tbody>-->
-<!--        &lt;!&ndash; foot &ndash;&gt;-->
-<!--&lt;!&ndash;        <tfoot>&ndash;&gt;-->
-<!--&lt;!&ndash;        <tr>&ndash;&gt;-->
-<!--&lt;!&ndash;            <th></th>&ndash;&gt;-->
-<!--&lt;!&ndash;            <th>Name</th>&ndash;&gt;-->
-<!--&lt;!&ndash;            <th>Job</th>&ndash;&gt;-->
-<!--&lt;!&ndash;            <th>Favorite Color</th>&ndash;&gt;-->
-<!--&lt;!&ndash;            <th></th>&ndash;&gt;-->
-<!--&lt;!&ndash;        </tr>&ndash;&gt;-->
-<!--&lt;!&ndash;        </tfoot>&ndash;&gt;-->
-
-<!--    </table>-->
     <div class="flex flex-wrap gap-20 justify-center">
+
         <!-- 첫 번째 카드 -->
         {#each homeList as item}
         <div class="card w-96 bg-base-100 shadow-xl">
@@ -93,4 +47,6 @@
             {/each}
     </div>
 
+
+</div>
 </div>

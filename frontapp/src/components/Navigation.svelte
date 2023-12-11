@@ -1,7 +1,7 @@
 
 <script>
     import {onMount} from "svelte";
-
+    import {usernameStore} from "$lib/stores/store.js";
     import axios from "axios";
     import {getCookie} from "../util/getCookie.ts";
 
@@ -22,19 +22,16 @@
                 },
             });
             username = userResponse.data.username;
-
+            $usernameStore = username;
         } catch (error) {
             console.error('Error fetching user information:', error);
         }
     };
-    function hello(){
-        console.log(username);
-    }
 </script>
 
 
 
-<div class="navbar bg-base-100">
+<div class="navbar bg-base-100 mb-20">
     <div class="navbar-start">
         <div class="dropdown">
             <div tabindex="0" role="button" class="btn btn-ghost btn-circle">
@@ -42,9 +39,8 @@
             </div>
             <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
                 <li>{username}</li>
-                <li><a>Homepage</a></li>
-                <li><a>Portfolio</a></li>
-                <li><a>About</a></li>
+                <li><a>전체 글 목록</a></li>
+                <li><a>내 글 목록</a></li>
             </ul>
             <ul class="flex space-x-4">
 
