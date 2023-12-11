@@ -60,4 +60,10 @@ public class PostService {
         post.setTitle(postWriteForm.getTitle());
         post.setPublished(postWriteForm.isPublished());
     }
+
+    public Object getMyList() {
+
+
+        return null;
+    }
 }

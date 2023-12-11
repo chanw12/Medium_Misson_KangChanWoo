@@ -22,7 +22,7 @@ public class PostController {
     //내글 리스트
     @GetMapping("/api/post/myList")
     public ResponseEntity<?> myList(){
-        return ResponseEntity.ok(postService.getList());
+        return ResponseEntity.ok(postService.getMyList());
     }
 
     //글 상세 내용 조회
@@ -59,5 +59,9 @@ public class PostController {
         return ResponseEntity.ok(postService.getHomeList());
     }
 
+    @GetMapping("/api/post/list")
+    public ResponseEntity<?> getlist(){
+        return ResponseEntity.ok(postService.getList());
+    }
 
 }
