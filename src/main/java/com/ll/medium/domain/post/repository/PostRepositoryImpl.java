@@ -46,4 +46,15 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
 
 
     }
+
+    @Override
+    public List<Post> getHomeList() {
+        QPost qPost = QPost.post;
+        List<Post> list = jpaQueryFactory.selectFrom(qPost)
+                .where(qPost.isPublished.eq(true))
+                .orderBy(qPost.createDate.desc())
+                .limit(30)
+                .fetch();
+        return list;
+    }
 }

@@ -49,5 +49,9 @@ public class PostController {
         return ResponseEntity.ok(postService.memberListNum(username,number));
     }
 
+    @GetMapping("/api/homelist")
+    public ResponseEntity<?> gethomelist(){
+        return ResponseEntity.ok(postService.getHomeList());
+    }
 
 }

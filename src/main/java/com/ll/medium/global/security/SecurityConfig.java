@@ -57,7 +57,7 @@ public class SecurityConfig {
                                 )
                 )
                 .authorizeHttpRequests(request ->
-                        request.requestMatchers("/api/authenticate","/api/member/join","/favicon.ico")
+                        request.requestMatchers("/api/authenticate","/api/member/join","/favicon.ico","/api/homelist")
                                 .permitAll()
                                 .requestMatchers(PathRequest.toH2Console()).permitAll()
                                 .anyRequest().authenticated()

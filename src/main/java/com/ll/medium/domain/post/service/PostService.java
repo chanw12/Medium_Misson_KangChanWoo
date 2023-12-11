@@ -49,4 +49,8 @@ public class PostService {
     public Post memberListNum(String username, Long number) {
         return postRepository.findByUserNameNumber(username,number);
     }
+
+    public List<Post> getHomeList() {
+        return postRepository.getHomeList();
+    }
 }

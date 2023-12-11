@@ -1,6 +1,8 @@
+
 <script>
     import axios from "axios";
     import {Cookies} from 'react-cookie';
+
     const cookies = new Cookies();
 
     let username = $state('')
@@ -8,7 +10,6 @@
     let errorMsg = $state('')
     let jwtToken = $state('')
 
-    let result = null
     function hideErrorMessage() {
         errorMsg = ""; // 에러 메시지 비우기
     }
@@ -22,37 +23,21 @@
             }
         )
             .then(res =>{
-                // if(res.status == 200){
-                //     location.href="/"  //로그인 성공시 메인페이지로 이동
-                // }
+
                 jwtToken = res.data.token;
-                console.log(jwtToken);
                 cookies.set("accessJwtToken",jwtToken,{
                     path: '/', // 모든 경로에 적용
                 });
-
-
             })
             .catch(error =>{
                 errorMsg = error.response.data.msg;
             })
+        location.href="/"
+
 
     }
 
-    async function fetchHelo1(){
-        const res = await axios.get('http://localhost:8090/api/member/user',{
-            headers: {
-                Authorization: `Bearer ${cookies.get('accessJwtToken')}`
-            }
-        })
-            .then(res =>{
-                console.log(res.data);
-            })
-            .catch(error =>{
-                errorMsg = error.response.data.msg;
-            })
 
-    }
 
 
 
@@ -78,9 +63,7 @@
         <input bind:value={password} id="password" type="text" placeholder="Password" class="input input-bordered input-sm w-full max-w-xs" />
         <button type="submit">로그인</button>
     </form>
-    <form  on:submit|preventDefault={fetchHelo1}>
-        <button type="submit">제출1</button>
-    </form>
+
 
 
 </div>
