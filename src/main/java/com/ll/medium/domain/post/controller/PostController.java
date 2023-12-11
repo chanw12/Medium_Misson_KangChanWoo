@@ -7,6 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
+
 @RestController
 @RequiredArgsConstructor
 @Slf4j
@@ -21,8 +23,8 @@ public class PostController {
 
     //내글 리스트
     @GetMapping("/api/post/myList")
-    public ResponseEntity<?> myList(){
-        return ResponseEntity.ok(postService.getMyList());
+    public ResponseEntity<?> myList(Principal principal){
+        return ResponseEntity.ok(postService.getMyList(principal.getName()));
     }
 
     //글 상세 내용 조회

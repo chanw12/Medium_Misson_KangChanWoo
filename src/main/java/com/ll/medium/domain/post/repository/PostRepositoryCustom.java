@@ -12,4 +12,5 @@ public interface PostRepositoryCustom {
     Post findByUserNameNumber(String username,Long number);
 
     List<Post> getHomeList();
+    List<Post> getMyList(String username);
 }

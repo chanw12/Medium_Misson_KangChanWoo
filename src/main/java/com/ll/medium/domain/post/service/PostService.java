@@ -39,7 +39,6 @@ public class PostService {
     }
     public void delete(Long id){
         Post post = postRepository.findById(id).orElseThrow(NoSuchElementException::new);
-
         postRepository.delete(post);
     }
     public List<Post> memberList(String username){
@@ -61,9 +60,7 @@ public class PostService {
         post.setPublished(postWriteForm.isPublished());
     }
 
-    public Object getMyList() {
-
-
-        return null;
+    public Object getMyList(String username) {
+        return postRepository.getMyList(username);
     }
 }

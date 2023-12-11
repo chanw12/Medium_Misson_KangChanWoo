@@ -40,7 +40,7 @@
             <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
                 <li>{username}</li>
                 <li><a href="http://localhost:5173/post/list">전체 글 목록</a></li>
-                <li><a>내 글 목록</a></li>
+                <li><a href="http://localhost:5173/post/myList">내 글 목록</a></li>
             </ul>
             <ul class="flex space-x-4">
 

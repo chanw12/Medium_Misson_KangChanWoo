@@ -57,4 +57,15 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
                 .fetch();
         return list;
     }
+
+    @Override
+    public List<Post> getMyList(String username) {
+            QPost qPost = QPost.post;
+            List<Post> list = jpaQueryFactory.selectFrom(qPost)
+                    .where(qPost.author.username.eq(username))
+                    .orderBy(qPost.createDate.desc())
+                    .fetch();
+            return list;
+
+    }
 }

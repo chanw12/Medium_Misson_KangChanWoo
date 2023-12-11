@@ -28,6 +28,18 @@
             console.error('Error fetching information:', error);
         }
     };
+    async function deletePost(){
+        const token = getCookie('accessJwtToken')
+        console.log(token);
+        const res = await axios.delete(`http://localhost:8090/api/post/${data.id}/delete`,
+        {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            }
+        });
+        location.href="/"
+    }
+
 </script>
 
 <div class="max-w-4xl mx-auto my-8">
@@ -38,7 +50,7 @@
         {#if ($usernameStore == author)}
             <div class="mb-5 mx-2">
                 <a href="http://localhost:5173/post/{data.id}/modify" class="btn btn-sm btn-primary ">글 수정</a>
-                <a href="http://localhost:5173/post/{data.id}/delete" class="btn btn-sm btn-error ">글 삭제</a>
+                <a on:click={deletePost}  class="btn btn-sm btn-error ">글 삭제</a>
             </div>
         {/if}
     </div>
