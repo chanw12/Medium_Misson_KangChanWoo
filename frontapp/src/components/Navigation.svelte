@@ -6,7 +6,6 @@
     import {getCookie} from "../util/getCookie.ts";
 
     let username = $state(null)
-    let jwttoken = $state(null);
     onMount(()=>{
         fetchUserData();
     })
@@ -27,6 +26,20 @@
             console.error('Error fetching user information:', error);
         }
     };
+    async function fetchLogout() {
+        const token = getCookie('accessJwtToken');
+
+        const res = await axios.post('http://localhost:8090/api/logout',
+            {},
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+            .then(()=>{
+                location.reload();
+            })
+    }
 </script>
 
 
@@ -38,9 +51,18 @@
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" /></svg>
             </div>
             <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
-                <li>{username}</li>
-                <li><a href="http://localhost:5173/post/list">전체 글 목록</a></li>
+
+                {#if username != null}
+                <li><a>유저 &nbsp : &nbsp  {username}</a></li>
+                    <div class="w-full h-0.5 bg-[#ccc]"></div>
+
                 <li><a href="http://localhost:5173/post/myList">내 글 목록</a></li>
+                <li><button class="items-start" on:click={fetchLogout}>로그아웃</button></li>
+                {/if}
+                <li><a href="http://localhost:5173/post/list">전체 글 목록</a></li>
+                {#if username == null}
+                    <li><a href="http://localhost:5173/member/login">로그인</a></li>
+                {/if}
             </ul>
             <ul class="flex space-x-4">
 
@@ -62,6 +84,3 @@
         </button>
     </div>
 </div>
-<!--<button on:click={hello}>-->
-<!--    button-->
-<!--</button>-->
