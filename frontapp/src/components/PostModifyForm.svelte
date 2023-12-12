@@ -36,7 +36,7 @@
                 },
                 {
                     headers: {
-                        Authorization: `Bearer ${token}}`
+                        Authorization: `Bearer ${token}`
                     }
                 }).then(
                 location.href="/"

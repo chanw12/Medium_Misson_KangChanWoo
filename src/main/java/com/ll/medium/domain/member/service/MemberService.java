@@ -1,6 +1,6 @@
 package com.ll.medium.domain.member.service;
 
-import com.ll.medium.domain.authority.entity.Authority;
+import com.ll.medium.domain.login.entity.Authority;
 import com.ll.medium.domain.member.entity.Member;
 import com.ll.medium.domain.member.form.MemberJoinForm;
 import com.ll.medium.domain.member.repository.MemberRepository;

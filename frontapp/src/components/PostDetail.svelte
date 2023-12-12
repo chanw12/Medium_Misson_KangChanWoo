@@ -30,7 +30,6 @@
     };
     async function deletePost(){
         const token = getCookie('accessJwtToken')
-        console.log(token);
         const res = await axios.delete(`http://localhost:8090/api/post/${data.id}/delete`,
         {
             headers: {

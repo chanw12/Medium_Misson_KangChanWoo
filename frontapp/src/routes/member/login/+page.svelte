@@ -2,6 +2,7 @@
 <script>
     import axios from "axios";
     import {Cookies} from 'react-cookie';
+    import {getCookie} from "../../../util/getCookie.ts";
 
     const cookies = new Cookies();
 
@@ -16,7 +17,7 @@
 
     setTimeout(hideErrorMessage, 5000);
     async function fetchLogin(){
-        const res = await axios.post('http://localhost:8090/api/authenticate',
+        const res = await axios.post('http://localhost:8090/api/login',
             {
                 username,
                 password,
@@ -36,10 +37,17 @@
 
 
     }
+    async function fetchLogout() {
+        const token = getCookie('accessJwtToken');
 
-
-
-
+        const res = await axios.post('http://localhost:8090/api/logout',
+            {},
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+    }
 
 </script>
 
@@ -62,6 +70,9 @@
         <input bind:value={username} type="text" placeholder="ID" class="input input-bordered input-sm w-full max-w-xs" />
         <input bind:value={password} id="password" type="text" placeholder="Password" class="input input-bordered input-sm w-full max-w-xs" />
         <button type="submit">로그인</button>
+    </form>
+    <form  on:submit|preventDefault={fetchLogout}>
+        <button type="submit">로그아웃</button>
     </form>
 
 

@@ -33,7 +33,7 @@
         },
         {
             headers: {
-            Authorization: `Bearer ${cookieValue}}`
+            Authorization: `Bearer ${cookieValue}`
         }
         })
     }

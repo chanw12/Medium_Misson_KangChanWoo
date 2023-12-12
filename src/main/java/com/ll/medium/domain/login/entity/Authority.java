@@ -1,4 +1,4 @@
-package com.ll.medium.domain.authority.entity;
+package com.ll.medium.domain.login.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

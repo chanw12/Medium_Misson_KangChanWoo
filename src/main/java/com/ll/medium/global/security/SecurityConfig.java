@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -25,6 +26,7 @@ public class SecurityConfig {
     private final TokenProvider tokenProvider;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
+    private final RedisTemplate<String,String> redisTemplate;
 
     // PasswordEncoder는 BCryptPasswordEncoder를 사용
     @Bean
@@ -57,13 +59,13 @@ public class SecurityConfig {
                                 )
                 )
                 .authorizeHttpRequests(request ->
-                        request.requestMatchers("/api/authenticate","/api/member/join","/favicon.ico","/api/homelist")
+                        request.requestMatchers("/api/logout","/api/login","/api/member/join","/favicon.ico","/api/homelist")
                                 .permitAll()
                                 .requestMatchers(PathRequest.toH2Console()).permitAll()
                                 .anyRequest().authenticated()
                 )
                 .addFilterBefore(
-                        new JwtFilter(tokenProvider),
+                        new JwtFilter(tokenProvider,redisTemplate),
                         UsernamePasswordAuthenticationFilter.class); // JwtFilter를 addFilterBefore로 등록했던 JwtSecurityConfig class 적용
 
 

@@ -1,7 +1,7 @@
 package com.ll.medium.domain.member.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.ll.medium.domain.authority.entity.Authority;
+import com.ll.medium.domain.login.entity.Authority;
 import com.ll.medium.domain.post.entity.Post;
 import com.ll.medium.global.jpa.BaseEntity;
 import jakarta.persistence.*;
