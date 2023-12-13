@@ -1,12 +1,13 @@
 package com.ll.medium.domain.post.entity;
 
+import com.ll.medium.domain.comment.entity.Comment;
 import com.ll.medium.domain.member.entity.Member;
 import com.ll.medium.global.jpa.BaseEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+
+import java.util.List;
 
 @Entity
 @SuperBuilder
@@ -26,6 +27,13 @@ public class Post extends BaseEntity {
 
     @Column(name = "isPublished")
     private boolean isPublished;
+
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
+    private List<Comment> comments;
+
+
+
 
 //    @OneToMany(mappedBy = "post", orphanRemoval = true, cascade = {CascadeType.ALL})
 //    @Builder.Default

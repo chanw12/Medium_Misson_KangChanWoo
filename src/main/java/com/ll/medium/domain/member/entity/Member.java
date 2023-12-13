@@ -1,6 +1,7 @@
 package com.ll.medium.domain.member.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.ll.medium.domain.comment.entity.Comment;
 import com.ll.medium.domain.login.entity.Authority;
 import com.ll.medium.domain.post.entity.Post;
 import com.ll.medium.global.jpa.BaseEntity;
@@ -37,4 +38,7 @@ public class Member extends BaseEntity {
             joinColumns = {@JoinColumn(name = "member_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "authority_name", referencedColumnName = "authority_name")})
     private Set<Authority> authorities;
+
+    @OneToMany(mappedBy = "author")
+    private List<Comment> comments;
 }
