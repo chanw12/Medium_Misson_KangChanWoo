@@ -26,7 +26,6 @@
         )
             .then(res =>{
                 jwtToken = res.data.token;
-                console.log(jwtToken)
                 cookies.set("accessJwtToken",jwtToken,{
                     path: '/', // 모든 경로에 적용
                 });

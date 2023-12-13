@@ -39,6 +39,7 @@ public class Member extends BaseEntity {
             inverseJoinColumns = {@JoinColumn(name = "authority_name", referencedColumnName = "authority_name")})
     private Set<Authority> authorities;
 
+
     @OneToMany(mappedBy = "author")
     private List<Comment> comments;
 }

@@ -10,6 +10,10 @@
     let author;
     let title;
     let body;
+    let post_id = data.id;
+    let commentbody
+
+
     onMount(()=>{
         fetchPostData();
     })
@@ -39,6 +43,19 @@
         location.href="/"
     }
 
+    async function writeComment(){
+        const token = getCookie('accessJwtToken')
+        const res = await axios.post(`http://localhost:8090/api/comment/write`,
+            {
+                body:commentbody,username:author,post_id
+            },
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                }
+            });
+    }
+
 </script>
 
 <div class="max-w-4xl mx-auto my-8">
@@ -54,5 +71,30 @@
         {/if}
     </div>
     <p class="w-auto break-all">{body}</p>
+
+    <div class="border-t mb-8 mt-20"></div>
+    <div>
+    <h1>Comment</h1>
+
+    <div class="mt-8 flex gap-2 items-center">
+        <textarea id="commentbody" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500" rows="4" placeholder="댓글을 입력하세요..." bind:value={commentbody}></textarea>
+        <button on:click={writeComment} class="mt-2 btn btn-primary ">댓글 등록</button>
+    </div>
+    </div>
+
+    <div class="border-t my-8"></div>
+
+
+    <!-- 댓글 리스트 -->
+    <div class="mt-8">
+        <div class="border rounded-md p-4">
+            <div class="flex items-center mb-2">
+                <span class="font-bold mr-2">댓글 작성자:</span>
+                <span class="text-gray-600">댓글 내용</span>
+            </div>
+            <!-- 댓글 내용이 들어가는 부분 -->
+        </div>
+        <!-- 다른 댓글들도 유사한 방식으로 표시 -->
+    </div>
 
 </div>
