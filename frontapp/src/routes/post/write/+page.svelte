@@ -1,30 +1,23 @@
 <script>
     import axios from "axios";
     import { onMount } from 'svelte';
-
+    import {getCookie} from "../../../util/getCookie.ts";
+    import {usernameStore} from "$lib/stores/store.js";
 
     let title = $state('')
     let body = $state('')
     let published = $state('')
     let cookieValue = $state('')
-    onMount(() => {
-        // 쿠키 읽기 함수 호출
-        cookieValue = getCookie('accessJwtToken');
-        console.log(cookieValue)
-    });
 
-    async function fetchHelo1(){
-        const res = await axios.get('http://localhost:8090/api/member/user',{
-            headers: {
-                Authorization: `Bearer ${cookieValue}`
-            }
-        })
-            .then(res =>{
-                console.log(res.data);
-            })
+    $effect(()=> {
+        cookieValue = getCookie("accessJwtToken")
 
+        if ($usernameStore == null) {
+            location.href = "/member/login";
+        }
+        }
+    )
 
-    }
 
     async function fetchWrite() {
         const res = await axios.post('http://localhost:8090/api/post/write',
@@ -36,29 +29,10 @@
             Authorization: `Bearer ${cookieValue}`
         }
         })
+            .then(res=>{
+                location.href=`/post/${res.data.id}`
+            })
     }
-
-    function getCookie(name) {
-        const decodedCookie = decodeURIComponent(document.cookie);
-        const cookies = decodedCookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            let cookie = cookies[i];
-            while (cookie.charAt(0) === ' ') {
-                cookie = cookie.substring(1);
-            }
-            if (cookie.indexOf(name + '=') === 0) {
-                return cookie.substring(name.length + 1, cookie.length);
-            }
-        }
-        return '';
-    }
-
-    function handleCheckboxChange(event) {
-        published = event.target.checked;
-        console.log('체크 여부:', published);
-    }
-
-
 
 </script>
 
@@ -67,15 +41,25 @@
     <meta name="description" content="글 작성" />
 </svelte:head>
 
-<div>
-    <form class="p-5" on:submit|preventDefault={fetchWrite}>
-        <input bind:value={title} type="text" class="input input-bordered input-sm w-full max-w-xs" />
-        <textarea bind:value={body}/>
-        <input type="checkbox" bind:value={published}  on:change={handleCheckboxChange} />
-        <button type="submit">로그인</button>
-    </form>
+<form on:submit|preventDefault={fetchWrite} class="max-w-2xl mx-auto mt-8 p-4 bg-gray-900 shadow-md rounded-md">
+    <div class="mb-4">
+        <label for="title" class="block text-gray-700 text-sm font-bold mb-2">제목</label>
+        <input type="text" id="title" class="w-full p-2 border rounded-md" bind:value={title} />
+    </div>
 
-    <form  on:submit|preventDefault={fetchHelo1}>
-        <button type="submit">제출1</button>
-    </form>
-</div>
+    <div class="mb-4">
+        <label for="body" class="block text-gray-700 text-sm font-bold mb-2">내용</label>
+        <textarea id="body" class="w-full p-2 border rounded-md textarea-lg h-96" bind:value={body}></textarea>
+    </div>
+
+    <div class="mb-4">
+        <label class="flex items-center">
+            <input type="checkbox" class="mr-2" bind:checked={published} />
+            <span class="text-sm">공개 여부</span>
+        </label>
+    </div>
+
+    <button type="submit" class="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-700">
+        저장
+    </button>
+</form>

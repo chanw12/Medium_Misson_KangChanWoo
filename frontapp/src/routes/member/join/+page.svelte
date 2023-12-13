@@ -1,6 +1,7 @@
 <script>
     import axios from "axios";
     import {onMount} from "svelte";
+    import {usernameStore} from "$lib/stores/store.js";
 
     let username = $state('')
     let password = $state('')
@@ -33,9 +34,13 @@
         result = JSON.stringify(json)
 
     }
-
-
+    $effect(()=>{
+        if($usernameStore != null){
+            location.href ="/";
+        }
+    })
 </script>
+
 
 <svelte:head>
     <title>Test1</title>

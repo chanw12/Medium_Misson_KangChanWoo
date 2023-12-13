@@ -39,8 +39,9 @@
                         Authorization: `Bearer ${token}`
                     }
                 }).then(
-                location.href="/"
+                location.href = `/post/${data.id}`
             )
+
         }catch(error){
             console.error('Error fetching information:', error);
         }

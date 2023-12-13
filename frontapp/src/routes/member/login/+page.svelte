@@ -3,6 +3,7 @@
     import axios from "axios";
     import {Cookies} from 'react-cookie';
     import {getCookie} from "../../../util/getCookie.ts";
+    import {usernameStore} from "$lib/stores/store.js";
 
     const cookies = new Cookies();
 
@@ -21,24 +22,26 @@
             {
                 username,
                 password,
-            },
-            {
-                headers:{
-
-                },withCredentials: true,
             }
         )
             .then(res =>{
-
+                jwtToken = res.data.token;
+                console.log(jwtToken)
+                cookies.set("accessJwtToken",jwtToken,{
+                    path: '/', // 모든 경로에 적용
+                });
                 location.href="/"
             })
             .catch(error =>{
                 errorMsg = error.response.data.msg;
             })
 
-
-
     }
+    $effect(()=>{
+        if($usernameStore != null){
+            location.href ="/";
+        }
+    })
 
 
 </script>

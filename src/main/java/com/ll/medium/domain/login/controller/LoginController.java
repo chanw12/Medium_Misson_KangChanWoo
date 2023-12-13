@@ -5,7 +5,6 @@ import com.ll.medium.domain.member.form.MemberLoginForm;
 import com.ll.medium.global.jwt.JwtFilter;
 import com.ll.medium.global.jwt.TokenDto;
 import com.ll.medium.global.jwt.TokenProvider;
-import com.ll.medium.global.rq.Rq;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -31,7 +30,6 @@ public class LoginController {
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final RedisTemplate<String,String> redisTemplate;
     private final LoginService loginService;
-    private final Rq rq;
     @PostMapping("/login")
     public ResponseEntity<TokenDto> authorize(@Valid @RequestBody MemberLoginForm memberLoginForm) {
 
@@ -49,7 +47,7 @@ public class LoginController {
         // response header에 jwt token에 넣어줌
         httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + jwt);
         redisTemplate.opsForValue().set("JWT_TOKEN:"+memberLoginForm.getUsername(),jwt);
-        rq.setCrossDomainCookie("accessJwtToken",jwt);
+
         // tokenDto를 이용해 response body에도 넣어서 리턴
         return new ResponseEntity<>(new TokenDto(jwt), httpHeaders, HttpStatus.OK);
     }
