@@ -5,6 +5,7 @@ import com.ll.medium.domain.member.entity.Member;
 import com.ll.medium.domain.member.form.MemberJoinForm;
 import com.ll.medium.domain.member.repository.MemberRepository;
 import com.ll.medium.domain.member.util.SecurityUtil;
+import com.ll.medium.global.exception.UserAlreadyExistsException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -20,7 +21,7 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
     public Member join(MemberJoinForm memberJoinForm){
         if(memberRepository.findByUserName(memberJoinForm.getUsername()).orElse(null)!=null){
-            throw new RuntimeException("이미 가입된 유저입니다");
+            throw new UserAlreadyExistsException("이미 가입된 유저입니다");
         }
 
         Authority authority = Authority.builder()
