@@ -40,6 +40,7 @@ public class Member extends BaseEntity {
     private Set<Authority> authorities;
 
 
+    @JsonIgnore
     @OneToMany(mappedBy = "author")
     private List<Comment> comments;
 }

@@ -1,5 +1,6 @@
 package com.ll.medium.domain.post.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ll.medium.domain.comment.entity.Comment;
 import com.ll.medium.domain.member.entity.Member;
 import com.ll.medium.global.jpa.BaseEntity;
@@ -29,6 +30,7 @@ public class Post extends BaseEntity {
     private boolean isPublished;
 
 
+    @JsonIgnore
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
     private List<Comment> comments;
 

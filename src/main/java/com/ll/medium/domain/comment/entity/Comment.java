@@ -1,6 +1,5 @@
 package com.ll.medium.domain.comment.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ll.medium.domain.member.entity.Member;
 import com.ll.medium.domain.post.entity.Post;
 import com.ll.medium.global.jpa.BaseEntity;
@@ -20,12 +19,10 @@ public class Comment extends BaseEntity {
 
     private String body;
 
-    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "post_id")
     private Post post;
 
-    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "author_id")
     private Member author;

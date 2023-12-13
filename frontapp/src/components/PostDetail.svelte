@@ -1,7 +1,7 @@
 
 
 <script>
-    import {onMount} from "svelte";
+    import {beforeUpdate, onMount} from "svelte";
     import {usernameStore} from "$lib/stores/store.js";
 
     export let data;
@@ -12,11 +12,31 @@
     let body;
     let post_id = data.id;
     let commentbody
-
+    let commentlist = ([]);
 
     onMount(()=>{
         fetchPostData();
+        fetchCommentData();
     })
+
+
+    const fetchCommentData = async () => {
+        try {
+            const token = getCookie('accessJwtToken')
+            const Response = await axios.get(`http://localhost:8090/api/comment/get/${data.id}`,{
+                headers: {
+                    Authorization: `Bearer ${token}`, // JWT 토큰을 헤더에 추가
+                },
+            }).then(res=>{
+                console.log(res.data)
+                commentlist = res.data;
+            });
+        } catch (error) {
+            console.error('Error fetching information:', error);
+        }
+    };
+
+
     const fetchPostData = async () => {
         try {
             const token = getCookie('accessJwtToken')
@@ -85,16 +105,28 @@
     <div class="border-t my-8"></div>
 
 
-    <!-- 댓글 리스트 -->
-    <div class="mt-8">
-        <div class="border rounded-md p-4">
-            <div class="flex items-center mb-2">
-                <span class="font-bold mr-2">댓글 작성자:</span>
-                <span class="text-gray-600">댓글 내용</span>
+    <div>  댓글</div>
+    {#each commentlist as comment}
+
+        <div class="mt-8">
+            <div class="border rounded-md p-4">
+                <div class="flex items-center justify-between mb-2">
+                    <div class="flex items-center">
+                        <span class="font-bold mr-2">{comment.author.username}:</span>
+                        <span class="text-gray-600">{comment.body}</span>
+                    </div>
+                    {#if ($usernameStore == comment.author.username)}
+                        <div class="flex gap-2">
+                            <button class="text-xs">수정</button>
+                            <p>/</p>
+                            <button class="text-xs">삭제</button>
+                        </div>
+                    {/if}
+                </div>
+                <!-- 댓글 내용이 들어가는 부분 -->
             </div>
-            <!-- 댓글 내용이 들어가는 부분 -->
+            <!-- 다른 댓글들도 유사한 방식으로 표시 -->
         </div>
-        <!-- 다른 댓글들도 유사한 방식으로 표시 -->
-    </div>
+    {/each}
 
 </div>

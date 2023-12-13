@@ -10,6 +10,8 @@ import com.ll.medium.domain.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class CommentService {
@@ -25,5 +27,9 @@ public class CommentService {
                 .author(author).build();
 
         commentRepository.save(comment);
+    }
+
+    public List<Comment> get(Long postid) {
+        return commentRepository.findByPostId(postid);
     }
 }
