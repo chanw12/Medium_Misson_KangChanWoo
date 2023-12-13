@@ -21,14 +21,15 @@
             {
                 username,
                 password,
+            },
+            {
+                headers:{
+
+                },withCredentials: true,
             }
         )
             .then(res =>{
 
-                jwtToken = res.data.token;
-                cookies.set("accessJwtToken",jwtToken,{
-                    path: '/', // 모든 경로에 적용
-                });
                 location.href="/"
             })
             .catch(error =>{
@@ -46,23 +47,6 @@
     <title>Test1</title>
     <meta name="description" content="테스트" />
 </svelte:head>
-
-<!--<div class="flex-col">-->
-<!--    <div class="items-center">Login</div>-->
-<!--    {#if errorMsg !== ''}-->
-<!--        <div role="alert" class="alert alert-warning">-->
-<!--            <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">-->
-<!--                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />-->
-<!--            </svg>-->
-<!--            <span>{errorMsg}</span>-->
-<!--        </div>-->
-<!--    {/if}-->
-<!--    <form class="p-5" on:submit|preventDefault={fetchLogin}>-->
-<!--        <input bind:value={username} type="text" placeholder="ID" class="input input-bordered input-sm w-full max-w-xs" />-->
-<!--        <input bind:value={password} id="password" type="text" placeholder="Password" class="input input-bordered input-sm w-full max-w-xs" />-->
-<!--        <button type="submit">로그인</button>-->
-<!--    </form>-->
-<!--</div>-->
 
 <button class="absolute top-20 left-4 btn btn-ghost" onclick={() => window.history.back()}>
     <svg class="h-6 w-6 fill-current md:h-8 md:w-8" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M15.41,16.58L10.83,12L15.41,7.41L14,6L8,12L14,18L15.41,16.58Z"></path></svg>
