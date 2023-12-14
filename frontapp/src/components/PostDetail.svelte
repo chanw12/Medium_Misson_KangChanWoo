@@ -29,15 +29,37 @@
 
         try {
             const token = getCookie('accessJwtToken')
-            const Response = await axios.post(`http://localhost:8090/api/vote/${data.id}`,{
-                },
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    }
-                }).then(res=>{
-                location.reload();
+            const checkVoteResponse = await axios.get(`http://localhost:8090/api/post/${data.id}/check-like`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                }
             });
+            if(!checkVoteResponse.data){
+                const res = await axios.delete(`http://localhost:8090/api/post/${data.id}/canCellike`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        }
+                    }).then(res=>res);
+                if(res.status == 200){
+                    location.reload();
+                }
+
+            }else{
+
+                const Response = await axios.post(`http://localhost:8090/api/post/${data.id}/like`,{
+                    },
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        }
+                    }).then((res=>res));
+                if(Response.status == 200){
+                    location.reload();
+                }
+            }
+
+
         } catch (error) {
             console.error('Error fetching information:', error);
         }
