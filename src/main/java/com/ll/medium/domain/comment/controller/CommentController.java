@@ -1,6 +1,7 @@
 package com.ll.medium.domain.comment.controller;
 
 import com.ll.medium.domain.comment.entity.Comment;
+import com.ll.medium.domain.comment.form.CommentModiForm;
 import com.ll.medium.domain.comment.form.CommentWriteForm;
 import com.ll.medium.domain.comment.service.CommentService;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,18 @@ public class CommentController {
     public ResponseEntity<?> get(@PathVariable("postid") Long postid){
         List<Comment> comments = commentService.get(postid);
         return ResponseEntity.ok().body(comments);
+    }
+
+    @DeleteMapping("/api/comment/delete/{id}")
+    public ResponseEntity<?> delete(@PathVariable("id") Long id){
+        commentService.delete(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/api/comment/modify/{id}")
+    public ResponseEntity<?> modify(@PathVariable("id") Long id,@RequestBody CommentModiForm commentModiForm){
+        Comment comment = commentService.modify(id, commentModiForm);
+        return ResponseEntity.ok().body(comment);
     }
 
 }

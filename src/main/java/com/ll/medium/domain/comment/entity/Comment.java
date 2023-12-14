@@ -15,6 +15,7 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString(callSuper = true)
 @Getter
+@Setter
 public class Comment extends BaseEntity {
 
     private String body;
@@ -27,12 +28,6 @@ public class Comment extends BaseEntity {
     @JoinColumn(name = "author_id")
     private Member author;
 
-    public void setAuthor(Member author) {
-        this.author = author;
-    }
 
-    public void setPost(Post post) {
-        this.post = post;
-    }
 
 }

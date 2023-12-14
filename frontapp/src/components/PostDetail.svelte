@@ -1,7 +1,7 @@
 
 
 <script>
-    import {beforeUpdate, onMount} from "svelte";
+    import {  onMount} from "svelte";
     import {usernameStore} from "$lib/stores/store.js";
 
     export let data;
@@ -13,12 +13,37 @@
     let post_id = data.id;
     let commentbody
     let commentlist = ([]);
+    let editingCommentId;
 
     onMount(()=>{
         fetchPostData();
         fetchCommentData();
     })
 
+    const handleEditClick = (id) => {
+        editingCommentId = id;
+    };
+
+    const fetchModiComment = async (id,body) => {
+
+        try {
+            const token = getCookie('accessJwtToken')
+            const Response = await axios.post(`http://localhost:8090/api/comment/modify/${id}`,{
+                    body
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    }
+                }).then(res=>{
+
+                    fetchCommentData();
+                    location.reload();
+            });
+        } catch (error) {
+            console.error('Error fetching information:', error);
+        }
+    };
 
     const fetchCommentData = async () => {
         try {
@@ -34,6 +59,20 @@
         } catch (error) {
             console.error('Error fetching information:', error);
         }
+    };
+    const fetchDeleteComment = async (event) => {
+        const id = event.currentTarget.dataset.data;
+            const token = getCookie('accessJwtToken')
+            const Response = await axios.delete(`http://localhost:8090/api/comment/delete/${id}`,{
+                headers: {
+                    Authorization: `Bearer ${token}`, // JWT 토큰을 헤더에 추가
+                },
+            }).then(()=>{
+                fetchCommentData()
+                location.reload()
+                }
+            );
+
     };
 
 
@@ -73,6 +112,9 @@
                 headers: {
                     Authorization: `Bearer ${token}`,
                 }
+            }).then(()=>{
+            fetchCommentData()
+            location.reload()
             });
     }
 
@@ -117,14 +159,22 @@
                     </div>
                     {#if ($usernameStore == comment.author.username)}
                         <div class="flex gap-2">
-                            <button class="text-xs">수정</button>
+                            <button class="text-xs" on:click={() => handleEditClick(comment.id)} >수정</button>
                             <p>/</p>
-                            <button class="text-xs">삭제</button>
+                            <button class="text-xs" on:click={fetchDeleteComment}  data-data="{comment.id}">삭제</button>
                         </div>
                     {/if}
                 </div>
                 <!-- 댓글 내용이 들어가는 부분 -->
             </div>
+            {#if (editingCommentId === comment.id)}
+                <div class="flex justify-center items-center">
+                <textarea  bind:value={comment.body}
+                           class="w-full px-3 py-2 h-20 border rounded-md focus:outline-none focus:border-blue-500 mt-4 mx-2"
+                           rows="4"></textarea>
+                <button class="btn btn-primary" on:click={()=>fetchModiComment(comment.id,comment.body) }>저장</button>
+                </div>
+            {/if}
             <!-- 다른 댓글들도 유사한 방식으로 표시 -->
         </div>
     {/each}
