@@ -1,9 +1,13 @@
 package com.ll.medium.domain.post.repository;
 
+import com.ll.medium.domain.member.entity.Member;
 import com.ll.medium.domain.post.entity.Post;
 import com.ll.medium.domain.post.entity.QPost;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -14,21 +18,33 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
         this.jpaQueryFactory = new JPAQueryFactory(em);
     }
     @Override
-    public List<Post> getListIsPublished() {
-        QPost qPost = QPost.post;
+    public Page<Post> getListIsPublished(Pageable pageable) {
+        QPost qPost = QPost.post;;
         List<Post> list = jpaQueryFactory.selectFrom(qPost)
                 .where(qPost.isPublished.eq(true))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
                 .orderBy(qPost.createDate.desc()).fetch();
-        return list;
+
+        long total = jpaQueryFactory.selectFrom(qPost)
+                .where(qPost.isPublished.eq(true))
+                .fetchCount();
+        return new PageImpl<>(list,pageable,total);
     }
 
     @Override
-    public List<Post> findByUserName(String username) {
+    public Page<Post> findByUserName(Pageable pageable, String username) {
         QPost qPost = QPost.post;
-        return jpaQueryFactory.selectFrom(qPost)
+        List<Post> posts = jpaQueryFactory.selectFrom(qPost)
                 .where(qPost.author.username.eq(username))
                 .orderBy(qPost.createDate.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
                 .fetch();
+        long total = jpaQueryFactory.selectFrom(qPost)
+                .where(qPost.author.username.eq(username))
+                .fetchCount();
+        return new PageImpl<>(posts,pageable,total);
     }
 
     @Override
@@ -59,13 +75,29 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
     }
 
     @Override
-    public List<Post> getMyList(String username) {
+    public Page<Post> getMyList(Pageable pageable,String username) {
             QPost qPost = QPost.post;
             List<Post> list = jpaQueryFactory.selectFrom(qPost)
                     .where(qPost.author.username.eq(username))
                     .orderBy(qPost.createDate.desc())
+                    .offset(pageable.getOffset())
+                    .limit(pageable.getPageSize())
                     .fetch();
-            return list;
+
+            long total = jpaQueryFactory.selectFrom(qPost)
+                    .where(qPost.author.username.eq(username))
+                    .fetchCount();
+
+            return new PageImpl<>(list,pageable,total);
+
+    }
+
+    @Override
+    public Boolean voteCheck(Long id, Member member) {
+        QPost qPost = QPost.post;
+        return jpaQueryFactory.selectFrom(qPost)
+                .where(qPost.id.eq(id).and(qPost.voter.contains(member)))
+                .fetch().isEmpty();
 
     }
 }

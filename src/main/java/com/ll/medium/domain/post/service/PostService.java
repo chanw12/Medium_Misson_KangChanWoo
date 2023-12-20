@@ -1,11 +1,15 @@
 package com.ll.medium.domain.post.service;
 
 
+import com.ll.medium.domain.member.entity.Member;
 import com.ll.medium.domain.member.service.MemberService;
 import com.ll.medium.domain.post.entity.Post;
 import com.ll.medium.domain.post.form.PostWriteForm;
 import com.ll.medium.domain.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,8 +34,9 @@ public class PostService {
 
         return Optional.of(postRepository.save(post));
     }
-    public List<Post> getList(){
-        return postRepository.getListIsPublished();
+    public Page<Post> getList(int page){
+        Pageable pageable = PageRequest.of(page,10);
+        return postRepository.getListIsPublished(pageable);
     }
 
     public Post getPost(Long id){
@@ -41,8 +46,9 @@ public class PostService {
         Post post = postRepository.findById(id).orElseThrow(NoSuchElementException::new);
         postRepository.delete(post);
     }
-    public List<Post> memberList(String username){
-        return postRepository.findByUserName(username);
+    public Page<Post> memberList(int page,String username){
+        Pageable pageable = PageRequest.of(page+1, 10);
+        return postRepository.findByUserName(pageable,username);
     }
 
     public Post memberListNum(String username, Long number) {
@@ -60,7 +66,24 @@ public class PostService {
         post.setPublished(postWriteForm.isPublished());
     }
 
-    public Object getMyList(String username) {
-        return postRepository.getMyList(username);
+    public Object getMyList(int page,String username) {
+        Pageable pageable = PageRequest.of(page-1,10);
+        return postRepository.getMyList(pageable,username);
     }
+
+    public void vote(Member member, Long id) {
+        Post post = postRepository.findById(id).get();
+        post.getVoter().add(member);
+    }
+
+    public Boolean checkvote(Member member, Long id) {
+        return postRepository.voteCheck(id,member);
+
+    }
+
+    public void canclevote(Long id,Member member) {
+        Post post = postRepository.findById(id).get();
+        post.getVoter().remove(member);
+    }
+
 }

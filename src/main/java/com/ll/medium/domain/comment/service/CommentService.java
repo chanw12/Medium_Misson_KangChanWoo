@@ -8,6 +8,7 @@ import com.ll.medium.domain.member.entity.Member;
 import com.ll.medium.domain.member.repository.MemberRepository;
 import com.ll.medium.domain.post.entity.Post;
 import com.ll.medium.domain.post.repository.PostRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,7 +45,9 @@ public class CommentService {
     }
     @Transactional
     public Comment modify(Long id, CommentModiForm commentModiForm) {
-        Comment comment = commentRepository.findById(id).get();
+        Comment comment = commentRepository.findById(id).orElseThrow(
+                ()-> new EntityNotFoundException("Comment를 찾을 수 없습니다")
+        );
         comment.setBody(commentModiForm.getBody());
         System.out.println(comment.getBody());
         return comment;

@@ -5,9 +5,12 @@ import com.ll.medium.domain.post.entity.Post;
 import com.ll.medium.global.jpa.BaseEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+
+import java.util.Set;
 
 @Entity
 @SuperBuilder
@@ -27,6 +30,10 @@ public class Comment extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "author_id")
     private Member author;
+
+
+    @ManyToMany
+    Set<Member> voter;
 
 
 

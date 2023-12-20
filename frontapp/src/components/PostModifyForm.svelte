@@ -30,7 +30,7 @@
     async function handleSubmit(){
         try{
             const token = getCookie('accessJwtToken')
-            const res = await axios.post(`http://localhost:8090/api/post/${data.id}/modify`,
+            const res = await axios.put(`http://localhost:8090/api/post/${data.id}/modify`,
                 {
                     title,body,published
                 },

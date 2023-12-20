@@ -9,6 +9,7 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @SuperBuilder
@@ -20,6 +21,7 @@ import java.util.List;
 public class Post extends BaseEntity {
     @Column
     private String title;
+
     @ManyToOne
     private Member author;
 
@@ -34,7 +36,8 @@ public class Post extends BaseEntity {
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
     private List<Comment> comments;
 
-
+    @ManyToMany
+    Set<Member> voter;
 
 
 //    @OneToMany(mappedBy = "post", orphanRemoval = true, cascade = {CascadeType.ALL})
