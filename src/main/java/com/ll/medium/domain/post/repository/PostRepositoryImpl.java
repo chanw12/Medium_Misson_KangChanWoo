@@ -3,17 +3,19 @@ package com.ll.medium.domain.post.repository;
 import com.ll.medium.domain.member.entity.Member;
 import com.ll.medium.domain.post.entity.Post;
 import com.ll.medium.domain.post.entity.QPost;
+import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PostRepositoryImpl implements PostRepositoryCustom {
     private final JPAQueryFactory jpaQueryFactory;
-
     public PostRepositoryImpl(EntityManager em) {
         this.jpaQueryFactory = new JPAQueryFactory(em);
     }
@@ -24,7 +26,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
                 .where(qPost.isPublished.eq(true))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
-                .orderBy(qPost.createDate.desc()).fetch();
+                .fetch();
 
         long total = jpaQueryFactory.selectFrom(qPost)
                 .where(qPost.isPublished.eq(true))
@@ -98,6 +100,56 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
         return jpaQueryFactory.selectFrom(qPost)
                 .where(qPost.id.eq(id).and(qPost.voter.contains(member)))
                 .fetch().isEmpty();
+
+    }
+
+    // title,body,author
+    @Override
+    public Page<Post> search(List<String> kwTypes, String kw, Pageable pageable) {
+        BooleanBuilder builder = new BooleanBuilder();
+        QPost qPost = QPost.post;
+
+        if (!kw.isBlank()){
+            List<BooleanExpression> conditions = new ArrayList<>();
+
+            if(kwTypes.contains("title")){
+                conditions.add(qPost.author.email.containsIgnoreCase(kw));
+            }
+            if(kwTypes.contains("body")){
+                conditions.add(qPost.body.containsIgnoreCase(kw));
+            }
+            if(kwTypes.contains("title")){
+                conditions.add(qPost.title.containsIgnoreCase(kw));
+            }
+
+            // 조건 리스트를 or 조건으로 결합합니다.
+            BooleanExpression combinedCondition = conditions.stream()
+                    .reduce(BooleanExpression::or)
+                    .orElse(null);
+
+            // 최종적으로 생성된 조건을 쿼리에 적용합니다.
+            if (combinedCondition != null) {
+                builder.and(combinedCondition);
+            }
+
+
+
+
+        }
+        List<Post> list = jpaQueryFactory.selectDistinct(qPost)
+                .from(qPost)
+                .where(builder)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+
+        long total = jpaQueryFactory.selectDistinct(qPost)
+                .from(qPost)
+                .where(builder)
+                .fetchCount();
+
+        return new PageImpl<>(list,pageable,total);
 
     }
 }

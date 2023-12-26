@@ -18,4 +18,6 @@ public interface PostRepositoryCustom {
     Page<Post> getMyList(Pageable pageable,String username);
 
     Boolean voteCheck(Long id, Member member);
+
+    Page<Post> search(List<String> kwTypes, String kw, Pageable pageable);
 }

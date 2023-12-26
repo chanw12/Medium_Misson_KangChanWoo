@@ -4,37 +4,89 @@
     import axios from "axios";
     import {getCookie} from "../util/getCookie.ts";
     import { page } from '$app/stores';
+    import { selectedCategory, selectedSorting,searchKeyword} from "$lib/stores/store.js";
+
     let pageNum;
+    let category;
+    let kw;
+    let sort;
+
     $effect(() => {
         const pageQuery = $page.url.searchParams.get('page');
+        const kwQuery= $page.url.searchParams.get('kw');
+        const sortQuery= $page.url.searchParams.get('sortCode');
+        const categoryQuery= $page.url.searchParams.get('kwType');
         pageNum = pageQuery ? parseInt(pageQuery) : 0;
+        kw = kwQuery ? kwQuery: "";
+        category = categoryQuery;
+        sort = sortQuery;
         fetchHomeList();
     });
 
-    let postList = $state([]);
+
+    let postList = $state([])
     let currentPage = $state()
     let totalPages = $state()
     let p = 0;
 
-
     const fetchHomeList = async () => {
         try {
             const token = getCookie('accessJwtToken')
-            const response = await axios.get(`http://localhost:8090/api/post/list?page=${pageNum}`,{
+            let url = "http://localhost:8090/api/post/list"
+            if(pageNum || pageNum === 0){
+                url += `?page=${pageNum}`
+            }
+            if(!kw == ""){
+                url += `&kw=${kw}&kwType=${category}&sortCode=${sort}`
+            }
+
+
+            const response = await axios.get(url,{
                 headers: {
                 Authorization: `Bearer ${token}`, // JWT 토큰을 헤더에 추가
             },
         })
-            console.log(response.data)
             postList = response.data.content;
-            console.log(postList);
             currentPage = response.data.pageable.pageNumber+1;
             totalPages = response.data.totalPages;
-
         } catch (error) {
             console.error('Error fetching user information:', error);
         }
     };
+
+    function incrementPageParam(url) {
+        const urlObj = new URL(url);
+        const queryParams = new URLSearchParams(urlObj.search);
+
+        // 'page' 파라미터의 현재 값을 찾아서 1 증가시킵니다.
+        let page = parseInt(queryParams.get('page'), 10);
+        if (!isNaN(page)) {
+            queryParams.set('page', page + 1);
+        } else {
+            // 'page' 파라미터가 없거나 유효하지 않은 경우, 'page'를 1로 설정합니다.
+            queryParams.set('page', 1);
+        }
+
+        // 변경된 쿼리 스트링을 원래 URL에 다시 연결합니다.
+        return urlObj.origin + urlObj.pathname + '?' + queryParams.toString();
+    }
+
+    function decrementPageParam(url) {
+        const urlObj = new URL(url);
+        const queryParams = new URLSearchParams(urlObj.search);
+
+        // 'page' 파라미터의 현재 값을 찾아서 1 감소시킵니다.
+        let page = parseInt(queryParams.get('page'), 10);
+        if (!isNaN(page) && page > 0) {
+            queryParams.set('page', page - 1);
+        } else {
+            // 'page'가 0이하이거나 유효하지 않은 경우, 'page'를 0으로 설정합니다.
+            queryParams.set('page', 0);
+        }
+
+        // 변경된 쿼리 스트링을 원래 URL에 다시 연결합니다.
+        return urlObj.origin + urlObj.pathname + '?' + queryParams.toString();
+    }
 
 </script>
 <div class="flex-row ">
@@ -66,13 +118,13 @@
         <div class="pagination-controls ">
             <div class="flex justify-center mt-20 items-center gap-6">
             {#if currentPage > 1}
-                <button class="btn" on:click={()=>{location.href=`list?page=${pageNum-1}`}}>이전</button>
+                <button class="btn" on:click={()=>{location.href=decrementPageParam($page.url)}}>이전</button>
             {/if}
 
             <span>페이지 {currentPage} / {totalPages}</span>
 
             {#if currentPage < totalPages}
-                <button class="btn" on:click={()=>{location.href=`list?page=${pageNum+1}`}}>다음</button>
+                <button class="btn" on:click={()=>{location.href=incrementPageParam($page.url)}}>다음</button>
             {/if}
             </div>
         </div>

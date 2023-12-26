@@ -9,11 +9,15 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -73,12 +77,42 @@ public class PostController {
         return ResponseEntity.ok(postService.getHomeList());
     }
 
-    //전체 글 목록
+    //전체 글 목록  //hit : 조회수 create: 생성일 likeCount:추천순
     @GetMapping("/api/post/list")
-    public ResponseEntity<Page<Post>> getlist(@RequestParam(value = "page",defaultValue = "0") int page){
-        System.out.println("-0------------------");
-        System.out.println(page);
-        return ResponseEntity.ok(postService.getList(page));
+    public ResponseEntity<Page<Post>> getlist(@RequestParam(value = "kwType",defaultValue = "title,body") List<String> kwTypes,
+            @RequestParam(value = "page",defaultValue = "0") int page,
+            @RequestParam(value = "sortCode",defaultValue = "createDesc") String sortCode,
+            @RequestParam(value = "kw",defaultValue = "") String kw
+    ){
+        List<Sort.Order> sorts = extracted(sortCode);
+        Map<String, Boolean> kwTypesMap = kwTypes
+                .stream()
+                .collect(Collectors.toMap(
+                        kwType -> kwType,
+                        kwType -> true
+                ));
+        System.out.println("========");
+        System.out.println(kw);
+        if(kw == ""){
+            return ResponseEntity.ok(postService.getList(page,sorts));
+        }else{
+            return ResponseEntity.ok(postService.search(kwTypes,kw,page,sorts));
+
+        }
+    }
+
+    private static List<Sort.Order> extracted(String sortCode) {
+        List<Sort.Order> sorts = new ArrayList<>();
+        if(sortCode == "createDesc"){
+            sorts.add(Sort.Order.desc("createDate"));
+        } else if (sortCode == "createAsc") {
+            sorts.add(Sort.Order.asc("createDate"));
+        } else if (sortCode == "likeCountDesc") {
+            sorts.add(Sort.Order.desc("voter.size"));
+        } else if (sortCode == "likeCountAsc") {
+            sorts.add(Sort.Order.desc("voter.size"));
+        }
+        return sorts;
     }
 
     @PostMapping("/api/post/{id}/like")
@@ -105,11 +139,7 @@ public class PostController {
         return ResponseEntity.ok().build();
 
     }
-
-//    @GetMapping("/search")
-//    public ResponseEntity<List<Post>> search(@RequestParam List<String> keywords){
-//        postService.search(keywords);
-//    }
+    
 
 
 

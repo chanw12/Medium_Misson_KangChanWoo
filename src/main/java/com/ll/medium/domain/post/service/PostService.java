@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,8 +35,9 @@ public class PostService {
 
         return Optional.of(postRepository.save(post));
     }
-    public Page<Post> getList(int page){
-        Pageable pageable = PageRequest.of(page,10);
+    public Page<Post> getList(int page,List<Sort.Order> sorts){
+
+        Pageable pageable = PageRequest.of(page,10,Sort.by(sorts));
         return postRepository.getListIsPublished(pageable);
     }
 
@@ -86,4 +88,8 @@ public class PostService {
         post.getVoter().remove(member);
     }
 
+    public Page<Post> search(List<String> kwTypes, String kw, int page, List<Sort.Order> sorts) {
+        Pageable pageable = PageRequest.of(page,10,Sort.by(sorts));
+        return postRepository.search(kwTypes,kw,pageable);
+    }
 }

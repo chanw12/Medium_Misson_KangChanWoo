@@ -1,11 +1,14 @@
 
 <script>
     import {onMount} from "svelte";
+    import { fade, slide } from 'svelte/transition';
     import {usernameStore} from "$lib/stores/store.js";
     import axios from "axios";
     import {getCookie} from "../util/getCookie.ts";
+    import { postList,searchKeyword,selectedSorting,selectedCategory } from "$lib/stores/store.js";
 
     let username = $state(null)
+    let showSearch = $state(false);
     onMount(()=>{
         fetchUserData();
     })
@@ -22,6 +25,7 @@
             });
             username = userResponse.data.username;
             $usernameStore = username;
+
         } catch (error) {
             console.error('Error fetching user information:', error);
         }
@@ -39,6 +43,17 @@
             .then(()=>{
                 location.reload();
             })
+    }
+    function toggleSearch(){
+        showSearch = !showSearch;
+    }
+
+    async function handleSearch() {
+        const searchQuery = document.getElementById('searchQuery').value;
+        console.log(`검색어: ${searchQuery}, 카테고리: ${$selectedCategory}, 정렬: ${$selectedSorting}`);
+        $searchKeyword = searchQuery
+        // const res = await axios.get(`http://localhost:8090/api/post/list?kw=${searchQuery}&sortCode=${$selectedSorting}&kwType=${$selectedCategory}`);
+        location.href=`list?kw=${searchQuery}&kwType=${$selectedCategory}&sortCode=${$selectedSorting}`
     }
 </script>
 
@@ -73,9 +88,35 @@
         <a class="btn btn-ghost text-xl">Blog</a>
     </div>
     <div class="navbar-end">
+        {#if !showSearch}
         <button class="btn btn-ghost btn-circle">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" on:click={toggleSearch} class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
         </button>
+        {/if}
+        {#if showSearch}
+            <div class="search-box flex items-center gap-2 " out:fade={{ duration: 300 }} in:slide={{ duration: 300 }}>
+                <select class="select select-bordered w-1/3 max-w-xs" bind:value={$selectedCategory}>
+                    <option value="title,body,author">전체</option>
+                    <option value="title">제목</option>
+                    <option value="content">내용</option>
+                    <option value="author">작성자</option>
+                    <option value="title,body">제목 + 내용</option>
+                    <option value="title,author">제목 + 작성자</option>
+                    <option value="body,author">내용 + 작성자</option>
+
+                </select>
+                <select class="select select-bordered w-1/3 max-w-xs" bind:value={$selectedSorting}>
+                    <option value="createDesc">생성일 ▼</option>
+                    <option value="createAsc">생성일 ▲</option>
+                    <option value="viewCountDesc">조회수 ▼</option>
+                    <option value="viewCountAsc">조회수 ▲</option>
+
+                </select>
+                <input type="text" id="searchQuery" placeholder="Type here" class="input input-bordered w-full" />
+                <button class="btn btn-primary" on:click={handleSearch}>검색</button>
+                <button class="btn" on:click={toggleSearch}>닫기</button>
+            </div>
+        {/if}
         <button class="btn btn-ghost btn-circle">
             <div class="indicator">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg>
