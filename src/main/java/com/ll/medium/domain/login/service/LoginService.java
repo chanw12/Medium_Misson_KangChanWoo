@@ -29,7 +29,6 @@ public class LoginService {
         String jwt = tokenProvider.createToken(authentication);
         redisTemplate.opsForValue().set("JWT_TOKEN:"+memberLoginForm.getUsername(),jwt);
         return jwt;
-
     }
     public void logout(){
         Object username = SecurityContextHolder.getContext().getAuthentication().getName();

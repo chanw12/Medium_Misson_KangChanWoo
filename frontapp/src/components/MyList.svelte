@@ -16,7 +16,8 @@
                     Authorization: `Bearer ${token}`, // JWT 토큰을 헤더에 추가
                 },
             })
-            postList = response.data;
+            postList = response.data.content;
+
 
         } catch (error) {
             console.error('Error fetching user information:', error);

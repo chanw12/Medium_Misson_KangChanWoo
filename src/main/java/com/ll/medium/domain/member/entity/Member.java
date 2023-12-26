@@ -18,6 +18,7 @@ import java.util.Set;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString(callSuper = true)
 @Getter
+@Setter
 public class Member extends BaseEntity {
 
 
@@ -43,4 +44,6 @@ public class Member extends BaseEntity {
     @JsonIgnore
     @OneToMany(mappedBy = "author")
     private List<Comment> comments;
+
+    private boolean isPaid;
 }

@@ -19,6 +19,7 @@ import java.util.Optional;
 public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
+
     public Member join(MemberJoinForm memberJoinForm){
         if(memberRepository.findByUserName(memberJoinForm.getUsername()).orElse(null)!=null){
             throw new UserAlreadyExistsException("이미 가입된 유저입니다");
@@ -33,6 +34,7 @@ public class MemberService {
                 .password(passwordEncoder.encode(memberJoinForm.getPassword()))
                 .authorities(Collections.singleton(authority))
                 .build();
+
         return memberRepository.save(member);
     }
 

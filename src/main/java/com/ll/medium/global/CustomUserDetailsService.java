@@ -1,5 +1,6 @@
 package com.ll.medium.global;
 
+import com.ll.medium.domain.member.MemberRole;
 import com.ll.medium.domain.member.entity.Member;
 import com.ll.medium.domain.member.repository.MemberRepository;
 import jakarta.transaction.Transactional;
@@ -36,6 +37,10 @@ public class CustomUserDetailsService implements UserDetailsService {
         List<GrantedAuthority> grantedAuthorities = member.getAuthorities().stream()
                 .map(authority -> new SimpleGrantedAuthority(authority.getAuthorityName()))
                 .collect(Collectors.toList());
+        if(member.isPaid()){
+            grantedAuthorities.add(new SimpleGrantedAuthority(MemberRole.PAID_USER.getValue()));
+        }
+
 
         return new org.springframework.security.core.userdetails.User(member.getUsername(),
                 member.getPassword(),

@@ -69,7 +69,7 @@ public class PostService {
     }
 
     public Object getMyList(int page,String username) {
-        Pageable pageable = PageRequest.of(page-1,10);
+        Pageable pageable = PageRequest.of(page,10);
         return postRepository.getMyList(pageable,username);
     }
 
