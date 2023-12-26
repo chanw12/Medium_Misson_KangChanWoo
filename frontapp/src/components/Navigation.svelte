@@ -53,7 +53,7 @@
         console.log(`검색어: ${searchQuery}, 카테고리: ${$selectedCategory}, 정렬: ${$selectedSorting}`);
         $searchKeyword = searchQuery
         // const res = await axios.get(`http://localhost:8090/api/post/list?kw=${searchQuery}&sortCode=${$selectedSorting}&kwType=${$selectedCategory}`);
-        location.href=`list?kw=${searchQuery}&kwType=${$selectedCategory}&sortCode=${$selectedSorting}`
+        location.href=`/post/list?kw=${searchQuery}&kwType=${$selectedCategory}&sortCode=${$selectedSorting}`
     }
 </script>
 
