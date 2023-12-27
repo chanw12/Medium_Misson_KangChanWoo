@@ -92,11 +92,13 @@ public class PostController {
                         kwType -> kwType,
                         kwType -> true
                 ));
-        System.out.println("========");
-        System.out.println(kw);
-        if(kw == ""){
+        System.out.println("----------------------");
+        System.out.println(sorts.get(0));
+        if(kw.isEmpty()){
+            System.out.println("first");
             return ResponseEntity.ok(postService.getList(page,sorts));
         }else{
+            System.out.println("second");
             return ResponseEntity.ok(postService.search(kwTypes,kw,page,sorts));
 
         }
@@ -104,14 +106,11 @@ public class PostController {
 
     private static List<Sort.Order> extracted(String sortCode) {
         List<Sort.Order> sorts = new ArrayList<>();
-        if(sortCode == "createDesc"){
-            sorts.add(Sort.Order.desc("createDate"));
-        } else if (sortCode == "createAsc") {
-            sorts.add(Sort.Order.asc("createDate"));
-        } else if (sortCode == "likeCountDesc") {
-            sorts.add(Sort.Order.desc("voter.size"));
-        } else if (sortCode == "likeCountAsc") {
-            sorts.add(Sort.Order.desc("voter.size"));
+        switch (sortCode) {
+            case "createDesc" -> sorts.add(Sort.Order.desc("createDate"));
+            case "createAsc" -> sorts.add(Sort.Order.asc("createDate"));
+            case "likeCountDesc" -> sorts.add(Sort.Order.desc("voter.size"));
+            case "likeCountAsc" -> sorts.add(Sort.Order.asc("voter.size"));
         }
         return sorts;
     }

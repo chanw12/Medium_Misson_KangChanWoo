@@ -40,7 +40,6 @@ public class PostService {
         return Optional.of(postRepository.save(post));
     }
     public Page<Post> getList(int page,List<Sort.Order> sorts){
-
         Pageable pageable = PageRequest.of(page,10,Sort.by(sorts));
         return postRepository.getListIsPublished(pageable);
     }
