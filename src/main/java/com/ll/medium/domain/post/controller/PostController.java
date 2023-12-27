@@ -13,6 +13,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.file.AccessDeniedException;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +43,7 @@ public class PostController {
 
     //글 상세 내용 조회
     @GetMapping("/api/post/{id}")
-    public ResponseEntity<?> detail(@PathVariable("id") Long id){
+    public ResponseEntity<?> detail(@PathVariable("id") Long id) throws AccessDeniedException {
         return ResponseEntity.ok(postService.getPost(id));
     }
 

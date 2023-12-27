@@ -25,6 +25,7 @@ public class LoginService {
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
         // 해당 객체를 SecurityContextHolder에 저장하고
         SecurityContextHolder.getContext().setAuthentication(authentication);
+
         // authentication 객체를 createToken 메소드를 통해서 JWT Token을 생성
         String jwt = tokenProvider.createToken(authentication);
         redisTemplate.opsForValue().set("JWT_TOKEN:"+memberLoginForm.getUsername(),jwt);

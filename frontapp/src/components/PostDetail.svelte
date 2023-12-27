@@ -15,11 +15,21 @@
     let commentlist = ([]);
     let editingCommentId;
     let votenum
+    let errorMsg;
 
     onMount(()=>{
         fetchPostData();
         fetchCommentData();
     })
+
+    function hideErrorMessage() {
+        setTimeout(function() {
+            var errorAlert = document.getElementById('errorAlert');
+            if (errorAlert) {
+                errorAlert.style.display = 'none';
+            }
+        }, 5000);
+    }
 
     const handleEditClick = (id) => {
         editingCommentId = id;
@@ -125,13 +135,14 @@
                     Authorization: `Bearer ${token}`, // JWT 토큰을 헤더에 추가
                 },
             });
-            console.log(Response);
             title = Response.data.title;
             author = Response.data.author.username;
             body =Response.data.body;
             votenum = Response.data.voter.length
         } catch (error) {
-            console.error('Error fetching information:', error);
+            console.error('Error fetching information:', error.response.data.message);
+            errorMsg = error.response.data.message;
+            hideErrorMessage();
         }
     };
     async function deletePost(){
@@ -161,7 +172,17 @@
             });
     }
 
+
 </script>
+{#if errorMsg}
+<div id="errorAlert" role="alert" class="alert alert-error w-1/4 fixed top-10 right-10">
+    <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+    <span>{errorMsg}</span>
+</div>
+    {/if}
+
+
+
 
 <div class="max-w-4xl mx-auto my-8">
 

@@ -5,7 +5,8 @@
     import {usernameStore} from "$lib/stores/store.js";
     import axios from "axios";
     import {getCookie} from "../util/getCookie.ts";
-    import { postList,searchKeyword,selectedSorting,selectedCategory } from "$lib/stores/store.js";
+    import { searchKeyword,selectedSorting,selectedCategory } from "$lib/stores/store.js";
+    import {getUserInfo} from "../util/rq.ts";
 
     let username = $state(null)
     let showSearch = $state(false);
@@ -14,15 +15,7 @@
     })
     const fetchUserData = async () => {
         try {
-            // JWT 토큰을 쿠키에서 가져오기
-            const token = getCookie('accessJwtToken')
-
-            // 유저 정보를 가져오기 위한 요청
-            const userResponse = await axios.get('http://localhost:8090/api/member/user', {
-                headers: {
-                    Authorization: `Bearer ${token}`, // JWT 토큰을 헤더에 추가
-                },
-            });
+            const userResponse = await getUserInfo();
             username = userResponse.data.username;
             $usernameStore = username;
 

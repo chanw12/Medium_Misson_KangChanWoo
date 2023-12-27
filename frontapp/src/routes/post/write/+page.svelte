@@ -8,7 +8,7 @@
     let body = $state('')
     let published = $state('')
     let cookieValue = $state('')
-
+    let paid = $state('');
     $effect(()=> {
         cookieValue = getCookie("accessJwtToken")
 
@@ -22,7 +22,7 @@
     async function fetchWrite() {
         const res = await axios.post('http://localhost:8090/api/post/write',
         {
-            title,body,published
+            title,body,published,paid
         },
         {
             headers: {
@@ -56,6 +56,12 @@
         <label class="flex items-center">
             <input type="checkbox" class="mr-2" bind:checked={published} />
             <span class="text-sm">공개 여부</span>
+        </label>
+    </div>
+    <div class="mb-4">
+        <label class="flex items-center">
+            <input type="checkbox" class="mr-2" bind:checked={paid} />
+            <span class="text-sm">유료 멤버쉽</span>
         </label>
     </div>
 

@@ -15,6 +15,8 @@ public class PostWriteForm {
 
     private boolean isPublished;
 
+    private boolean isPaid;
+
 
 }
 
