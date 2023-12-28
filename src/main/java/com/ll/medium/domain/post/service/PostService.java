@@ -7,6 +7,7 @@ import com.ll.medium.domain.post.entity.Post;
 import com.ll.medium.domain.post.form.PostWriteForm;
 import com.ll.medium.domain.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -26,15 +27,18 @@ import java.util.Optional;
 public class PostService {
     private final MemberService memberService;
     private final PostRepository postRepository;
-
+    @Value("${cdn.baseurl}")
+    private String cdnurl;
 
     public Optional<Post> write(PostWriteForm postWriteForm){
+
         Post post = Post.builder()
                 .title(postWriteForm.getTitle())
                 .body(postWriteForm.getBody())
                 .author(memberService.getMyUserWithAuthorities().get())
                 .isPublished(postWriteForm.isPublished())
                 .isPaid(postWriteForm.isPaid())
+                .imgUrl(cdnurl+postWriteForm.getFile().getOriginalFilename())
                 .build();
 
         return Optional.of(postRepository.save(post));

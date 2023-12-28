@@ -1,18 +1,22 @@
 package com.ll.medium.domain.post.controller;
 
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.ll.medium.domain.member.entity.Member;
 import com.ll.medium.domain.member.service.MemberService;
 import com.ll.medium.domain.post.entity.Post;
 import com.ll.medium.domain.post.form.PostWriteForm;
 import com.ll.medium.domain.post.service.PostService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.nio.file.AccessDeniedException;
 import java.security.Principal;
 import java.util.ArrayList;
@@ -26,11 +30,22 @@ import java.util.stream.Collectors;
 public class PostController {
     private final PostService postService;
     private final MemberService memberService;
+    private final AmazonS3 amazonS3;
 
+    @Value("${cdn.bucketName}")
+    private String bucketName;
 
     @PostMapping("/api/post/write")
-    public ResponseEntity<?> write(@Valid @RequestBody PostWriteForm postWriteForm){
+    public ResponseEntity<?> write(@Validated @ModelAttribute PostWriteForm postWriteForm){
+        System.out.println("----------------");
+        System.out.println(postWriteForm);
+        String objectName = postWriteForm.getFile().getOriginalFilename();
 
+        try {
+            amazonS3.putObject(new PutObjectRequest(bucketName, objectName, postWriteForm.getFile().getInputStream(), null));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return ResponseEntity.ok(postService.write(postWriteForm));
     }
 
@@ -92,8 +107,7 @@ public class PostController {
                         kwType -> kwType,
                         kwType -> true
                 ));
-        System.out.println("----------------------");
-        System.out.println(sorts.get(0));
+
         if(kw.isEmpty()){
             System.out.println("first");
             return ResponseEntity.ok(postService.getList(page,sorts));

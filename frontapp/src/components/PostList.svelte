@@ -131,7 +131,7 @@
             <!-- 첫 번째 카드 -->
             {#each postList as item}
                 <div class="card w-96 bg-base-100 shadow-xl">
-                    <figure><img src="https://daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.jpg" alt="Shoes" /></figure>
+                    <figure><img src="https://{item.imgUrl}" class="w-56 h-56"/></figure>
                     <div class="card-body">
                         <div class="flex justify-between items-center">
                             <h2 class="card-title">{item.title}</h2>
@@ -145,7 +145,7 @@
                             <div class="items-end">
                                 <p class="text-sm opacity-50">작성자:{item.author.username}</p>
                             </div>
-                            <a on:click|preventDefault="{(event) => handlePostClick(item, event)}" class="btn btn-primary">자세히 보기</a>
+                            <button on:click|preventDefault="{(event) => handlePostClick(item, event)}" class="btn btn-primary">자세히 보기</button>
                         </div>
                     </div>
                 </div>

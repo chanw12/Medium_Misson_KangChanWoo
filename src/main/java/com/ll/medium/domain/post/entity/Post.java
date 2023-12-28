@@ -41,5 +41,7 @@ public class Post extends BaseEntity {
 
     private boolean isPaid;
 
+    private String imgUrl;
+
 
 }

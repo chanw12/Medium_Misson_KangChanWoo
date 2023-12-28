@@ -1,37 +1,29 @@
 <script>
-    let username = $state('')
+    import axios from 'axios';
 
-    let repositories = $state([]);
+    async function handleFileUpload(event) {
+        const file = event.target.files[0];
+        if (!file) return;
 
-    async function fetchRepositories(){
-        const res = await fetch('https://localhost:8090/api/member/join', {
-            method: 'POST',
-            body: JSON.stringify({
+        const formData = new FormData();
+        formData.append('file', file);
 
-            })
-        })
-        repositories = await response.json();
+        try {
+            const response = await axios.post('http://localhost:8090/api/upload', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+            console.log('File uploaded successfully:', response.data);
+        } catch (error) {
+            console.error('Error uploading file:', error);
+        }
     }
-
-
 </script>
 
-<svelte:head>
-    <title>Test1</title>
-    <meta name="description" content="테스트" />
-</svelte:head>
-<div class="p-5">
-    <form on:submit|preventDefault={fetchRepositories}>
-        <input class="input input-bordered" type="text" bind:value={username} placeholder="github 사용자 이름을 입력하세요">
-        <button type="submit">데이터 가져오기</button>
-    </form>
-</div>
+<form on:submit|preventDefault>
+    <input type="file" on:change={handleFileUpload} />
+</form>
+<img src="https://ghuazvmjviqg21655229.cdn.ntruss.com/OIG.jpeg">
+<img src="https://ghuazvmjviqg21655229.cdn.ntruss.com/sample-object.png">
 
-
-<section class="text-red-500 h-full">
-    <ul>
-        {#each repositories as repo}
-            <li>{repo.name}</li>
-        {/each}
-    </ul>
-</section>
