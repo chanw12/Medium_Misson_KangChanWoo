@@ -64,8 +64,12 @@
 
             <!-- 첫 번째 카드 -->
             {#each postList as item}
-                <div class="card w-96 bg-base-100 shadow-xl">
+                <div class="card w-96 bg-base-100  shadow-xl border border-gray-800 rounded-lg">
+                    {#if item.imgUrl == null}
+                        <figure><img src="https://daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.jpg" alt="Shoes" /></figure>
+                    {:else }
                     <figure><img src="https://{item.imgUrl}" class="w-56 h-56"/></figure>
+                    {/if}
                     <div class="card-body">
                         <div class="flex justify-between items-center">
                             <h2 class="card-title">{item.title}</h2>

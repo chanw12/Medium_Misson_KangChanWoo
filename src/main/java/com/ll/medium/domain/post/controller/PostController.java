@@ -37,15 +37,19 @@ public class PostController {
 
     @PostMapping("/api/post/write")
     public ResponseEntity<?> write(@Validated @ModelAttribute PostWriteForm postWriteForm){
-        System.out.println("----------------");
-        System.out.println(postWriteForm);
-        String objectName = postWriteForm.getFile().getOriginalFilename();
 
-        try {
-            amazonS3.putObject(new PutObjectRequest(bucketName, objectName, postWriteForm.getFile().getInputStream(), null));
-        } catch (IOException e) {
-            e.printStackTrace();
+        if(postWriteForm.getFile() != null && !postWriteForm.getFile().isEmpty())
+        {
+            String objectName = postWriteForm.getFile().getOriginalFilename();
+
+
+            try {
+                amazonS3.putObject(new PutObjectRequest(bucketName, objectName, postWriteForm.getFile().getInputStream(), null));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
+
         return ResponseEntity.ok(postService.write(postWriteForm));
     }
 

@@ -38,7 +38,7 @@ public class PostService {
                 .author(memberService.getMyUserWithAuthorities().get())
                 .isPublished(postWriteForm.isPublished())
                 .isPaid(postWriteForm.isPaid())
-                .imgUrl(cdnurl+postWriteForm.getFile().getOriginalFilename())
+                .imgUrl(postWriteForm.getFile() != null ? cdnurl + postWriteForm.getFile().getOriginalFilename() : null)
                 .build();
 
         return Optional.of(postRepository.save(post));
