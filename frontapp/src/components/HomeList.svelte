@@ -2,7 +2,7 @@
 
     import {onMount} from "svelte";
     import axios from "axios";
-    import {getUserInfo} from "../util/rq.ts";
+    import rq from "../util/rq.svelte.ts";
 
     onMount(()=>{
         fetchHomeList();
@@ -18,10 +18,10 @@
 
     const handlePostClick = async (item,event)=>{
         if(item.paid){
-            const userResponse = await getUserInfo();
-            const isPaidUser = userResponse.data.paid;
+            const userResponse = rq.member;
+            const isPaidUser = userResponse.paid;
 
-            if(!isPaidUser){
+            if(item.author.username != rq.member.username&& !isPaidUser){
                 event.preventDefault();
                 errorMsg = "유료 회원만 이글을 볼 수 있습니다"
                 hideErrorMessage();
@@ -60,7 +60,11 @@
         <!-- 첫 번째 카드 -->
         {#each homeList as item}
             <div class="card w-96 bg-base-100 shadow-xl">
-                <figure><img src="https://{item.imgUrl}" class="w-56 h-56"/></figure>
+                {#if item.imgUrl == null}
+                    <figure><img src="https://daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.jpg" alt="Shoes" /></figure>
+                {:else }
+                    <figure><img src="https://{item.imgUrl}" class="w-56 h-56"/></figure>
+                {/if}
                 <div class="card-body">
                     <div class="flex justify-between items-center">
                         <h2 class="card-title">{item.title}</h2>

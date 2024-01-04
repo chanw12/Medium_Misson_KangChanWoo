@@ -38,17 +38,19 @@
     const fetchAddVote = async (id) => {
 
         try {
-            const token = getCookie('accessJwtToken')
+            const accessToken = getCookie('accessToken')
+            const refreshToken = getCookie('RefreshToken')
+
             const checkVoteResponse = await axios.get(`http://localhost:8090/api/post/${data.id}/check-like`, {
                 headers: {
-                    Authorization: `Bearer ${token}`,
+                    Authorization: `Bearer ${refreshToken}#${accessToken}`
                 }
             });
             if(!checkVoteResponse.data){
                 const res = await axios.delete(`http://localhost:8090/api/post/${data.id}/canCellike`,
                     {
                         headers: {
-                            Authorization: `Bearer ${token}`,
+                            Authorization: `Bearer ${refreshToken}#${accessToken}`
                         }
                     }).then(res=>res);
                 if(res.status == 200){
@@ -61,7 +63,7 @@
                     },
                     {
                         headers: {
-                            Authorization: `Bearer ${token}`,
+                            Authorization: `Bearer ${refreshToken}#${accessToken}`
                         }
                     }).then((res=>res));
                 if(Response.status == 200){
@@ -78,13 +80,14 @@
     const fetchModiComment = async (id,body) => {
 
         try {
-            const token = getCookie('accessJwtToken')
+            const accessToken = getCookie('accessToken')
+            const refreshToken = getCookie('RefreshToken')
             const Response = await axios.post(`http://localhost:8090/api/comment/modify/${id}`,{
                     body
                 },
                 {
                     headers: {
-                        Authorization: `Bearer ${token}`,
+                        Authorization: `Bearer ${refreshToken}#${accessToken}`
                     }
                 }).then(res=>{
 
@@ -98,11 +101,12 @@
 
     const fetchCommentData = async () => {
         try {
-            const token = getCookie('accessJwtToken')
+            const accessToken = getCookie('accessToken')
+            const refreshToken = getCookie('RefreshToken')
             const Response = await axios.get(`http://localhost:8090/api/comment/get/${data.id}`,{
                 headers: {
-                    Authorization: `Bearer ${token}`, // JWT 토큰을 헤더에 추가
-                },
+                    Authorization: `Bearer ${refreshToken}#${accessToken}`
+                }
             }).then(res=>{
                 console.log(res.data)
                 commentlist = res.data;
@@ -113,11 +117,12 @@
     };
     const fetchDeleteComment = async (event) => {
         const id = event.currentTarget.dataset.data;
-            const token = getCookie('accessJwtToken')
+        const accessToken = getCookie('accessToken')
+        const refreshToken = getCookie('RefreshToken')
             const Response = await axios.delete(`http://localhost:8090/api/comment/delete/${id}`,{
                 headers: {
-                    Authorization: `Bearer ${token}`, // JWT 토큰을 헤더에 추가
-                },
+                    Authorization: `Bearer ${refreshToken}#${accessToken}`
+                }
             }).then(()=>{
                 fetchCommentData()
                 location.reload()
@@ -129,11 +134,12 @@
 
     const fetchPostData = async () => {
         try {
-            const token = getCookie('accessJwtToken')
+            const accessToken = getCookie('accessToken')
+            const refreshToken = getCookie('RefreshToken')
             const Response = await axios.get(`http://localhost:8090/api/post/${data.id}`,{
                 headers: {
-                    Authorization: `Bearer ${token}`, // JWT 토큰을 헤더에 추가
-                },
+                    Authorization: `Bearer ${refreshToken}#${accessToken}`
+                }
             });
             title = Response.data.title;
             author = Response.data.author.username;
@@ -146,25 +152,27 @@
         }
     };
     async function deletePost(){
-        const token = getCookie('accessJwtToken')
+        const accessToken = getCookie('accessToken')
+        const refreshToken = getCookie('RefreshToken')
         const res = await axios.delete(`http://localhost:8090/api/post/${data.id}/delete`,
         {
             headers: {
-                Authorization: `Bearer ${token}`,
+                Authorization: `Bearer ${refreshToken}#${accessToken}`
             }
         });
         location.href="/"
     }
 
     async function writeComment(){
-        const token = getCookie('accessJwtToken')
+        const accessToken = getCookie('accessToken')
+        const refreshToken = getCookie('RefreshToken')
         const res = await axios.post(`http://localhost:8090/api/comment/write`,
             {
                 body:commentbody,username:author,post_id
             },
             {
                 headers: {
-                    Authorization: `Bearer ${token}`,
+                    Authorization: `Bearer ${refreshToken}#${accessToken}`
                 }
             }).then(()=>{
             fetchCommentData()

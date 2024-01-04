@@ -3,7 +3,7 @@
     import {onMount} from "svelte";
     import axios from "axios";
     import {getCookie} from "../util/getCookie.ts";
-    import {getUserInfo} from "../util/rq.ts";
+    import rq from "../util/rq.svelte.ts";
 
     onMount(()=>{
         fetchHomeList();
@@ -20,10 +20,11 @@
 
     const handlePostClick = async (item,event)=>{
         if(item.paid){
-            const userResponse = await getUserInfo();
-            const isPaidUser = userResponse.data.paid;
-
-            if(!isPaidUser){
+            const userResponse = rq.member;
+            const isPaidUser = userResponse.paid;
+            console.log(rq.member.username)
+            console.log(item.author.username);
+            if(item.author.username != rq.member.username&& !isPaidUser){
                 event.preventDefault();
                 errorMsg = "유료 회원만 이글을 볼 수 있습니다"
                 hideErrorMessage();
@@ -34,11 +35,13 @@
     }
     const fetchHomeList = async () => {
         try {
-            const token = getCookie('accessJwtToken')
+            const accessToken = getCookie('accessToken');
+            const refreshToken = getCookie('RefreshToken')
+
             const response = await axios.get('http://localhost:8090/api/post/myList',{
                 headers: {
-                    Authorization: `Bearer ${token}`, // JWT 토큰을 헤더에 추가
-                },
+                    Authorization: `Bearer ${refreshToken}#${accessToken}`
+                }
             })
             postList = response.data.content;
         } catch (error) {

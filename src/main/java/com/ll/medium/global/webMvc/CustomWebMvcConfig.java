@@ -14,11 +14,19 @@ public class CustomWebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/api/**")
-                .allowedOrigins("https://cdpn.io", "https://localhost:5173","http://localhost:5173")
+                .allowedOrigins(
+                        "https://cdpn.io",
+                        AppConfig.getSiteFrontUrl()
+                )
                 .allowedMethods("*")
                 .allowedHeaders("*")
                 .allowCredentials(true);
+
+        registry.addMapping("/member/socialLogin/kakao")
+                .allowedOrigins("http://localhost:5173")
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS");
     }
+
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {

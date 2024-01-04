@@ -10,7 +10,6 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @SuperBuilder
@@ -32,13 +31,17 @@ public class Member extends BaseEntity {
     @OneToMany(mappedBy = "author")
     private List<Post> postList;
 
+    @Column(unique = true)
+    private String refreshToken;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "member_authority",
             joinColumns = {@JoinColumn(name = "member_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "authority_name", referencedColumnName = "authority_name")})
-    private Set<Authority> authorities;
+    private List<Authority> authorities;
+
+
 
 
     @JsonIgnore

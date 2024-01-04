@@ -6,6 +6,7 @@ import com.ll.medium.domain.member.service.MemberService;
 import com.ll.medium.domain.post.entity.Post;
 import com.ll.medium.domain.post.form.PostWriteForm;
 import com.ll.medium.domain.post.repository.PostRepository;
+import com.ll.medium.global.rq.Rq;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -30,6 +31,8 @@ public class PostService {
     @Value("${cdn.baseurl}")
     private String cdnurl;
 
+    private final Rq rq;
+
     public Optional<Post> write(PostWriteForm postWriteForm){
 
         Post post = Post.builder()
@@ -51,7 +54,7 @@ public class PostService {
     public Post getPost(Long id) throws AccessDeniedException {
         Post post = postRepository.findById(id)
                 .orElseThrow(()->new NoSuchElementException("Post not Found"));
-        if(post.isPaid() && !SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream().anyMatch(grantedAuthority ->
+        if(post.isPaid() && !post.getAuthor().getUsername().equals(rq.getMember().getUsername()) && !SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream().anyMatch(grantedAuthority ->
                 grantedAuthority.getAuthority().equals("ROLE_PAID"))){
             throw new AccessDeniedException("유료 멤버십 회원만 이 글을 볼 수 있습니다");
         }
@@ -104,5 +107,9 @@ public class PostService {
     public Page<Post> search(List<String> kwTypes, String kw, int page, List<Sort.Order> sorts) {
         Pageable pageable = PageRequest.of(page,10,Sort.by(sorts));
         return postRepository.search(kwTypes,kw,pageable);
+    }
+
+    public void deleteAll(){
+        postRepository.deleteAll();
     }
 }

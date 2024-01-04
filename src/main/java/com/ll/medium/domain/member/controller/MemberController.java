@@ -4,12 +4,13 @@ import com.ll.medium.domain.member.entity.Member;
 import com.ll.medium.domain.member.form.MemberJoinForm;
 import com.ll.medium.domain.member.service.MemberService;
 import com.ll.medium.global.exception.NotValidFormException;
+import com.ll.medium.global.rq.Rq;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.util.MimeTypeUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +24,7 @@ import java.util.List;
 public class MemberController {
     private final MemberService memberService;
     private final PasswordEncoder passwordEncoder;
+    private final Rq rq;
 
 
     @PostMapping("/join")
@@ -43,17 +45,20 @@ public class MemberController {
 
     }
 
-    @GetMapping("/user")
-    @PreAuthorize("hasAnyRole('USER','ADMIN')")
+
+    @GetMapping(value = "/user", consumes = MimeTypeUtils.ALL_VALUE)
     public ResponseEntity<Member> getMyUserInfo() {
-        return ResponseEntity.ok(memberService.getMyUserWithAuthorities().get());
+        return ResponseEntity.ok(rq.getMember());
     }
 
+
+
     @GetMapping("/user/{username}")
-    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<Member> getUserInfo(@PathVariable String username) {
         return ResponseEntity.ok(memberService.getUserWithAuthorities(username).get());
     }
+
+
 
 
 

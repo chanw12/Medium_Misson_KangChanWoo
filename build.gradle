@@ -87,6 +87,11 @@ dependencies {
 
     //
     implementation 'com.amazonaws:aws-java-sdk-s3:1.11.238'
+
+
+    implementation 'org.json:json:20220320'
+
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-hibernate5'
 }
 
 tasks.named('test') {

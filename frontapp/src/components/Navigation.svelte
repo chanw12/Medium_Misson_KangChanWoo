@@ -6,36 +6,21 @@
     import axios from "axios";
     import {getCookie} from "../util/getCookie.ts";
     import { searchKeyword,selectedSorting,selectedCategory } from "$lib/stores/store.js";
-    import {getUserInfo} from "../util/rq.ts";
+    import rq from "../util/rq.svelte.ts";
+
 
     let username = $state(null)
     let showSearch = $state(false);
     onMount(()=>{
-        fetchUserData();
+        rq.initAuth();
     })
-    const fetchUserData = async () => {
-        try {
-            const userResponse = await getUserInfo();
-            username = userResponse.data.username;
-            $usernameStore = username;
 
-        } catch (error) {
-            console.error('Error fetching user information:', error);
-        }
-    };
+
+
+
     async function fetchLogout() {
-        const token = getCookie('accessJwtToken');
+        rq.logout();
 
-        const res = await axios.post('http://localhost:8090/api/logout',
-            {},
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            })
-            .then(()=>{
-                location.reload();
-            })
     }
     function toggleSearch(){
         showSearch = !showSearch;
@@ -60,15 +45,15 @@
             </div>
             <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
 
-                {#if username != null}
-                <li><a>유저 &nbsp : &nbsp  {username}</a></li>
+                {#if rq.isLogin()}
+                <li><a>유저 &nbsp : &nbsp  {rq.member.username}</a></li>
                     <div class="w-full h-0.5 bg-[#ccc]"></div>
 
                 <li><a href="http://localhost:5173/post/myList">내 글 목록</a></li>
                 <li><button class="items-start" on:click={fetchLogout}>로그아웃</button></li>
                 {/if}
                 <li><a href="http://localhost:5173/post/list">전체 글 목록</a></li>
-                {#if username == null}
+                {#if rq.isLogout()}
                     <li><a href="http://localhost:5173/member/login">로그인</a></li>
                 {/if}
             </ul>
@@ -118,3 +103,4 @@
         </button>
     </div>
 </div>
+

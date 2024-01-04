@@ -1,41 +1,75 @@
 package com.ll.medium.global.rq;
 
-import com.ll.medium.domain.member.service.MemberService;
+import com.ll.medium.domain.member.entity.Member;
+import com.ll.medium.global.app.AppConfig;
+import com.ll.medium.global.rsData.RsData;
+import com.ll.medium.global.security.SecurityUser;
+import jakarta.persistence.EntityManager;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseCookie;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.RequestScope;
+
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.Optional;
+
 
 @Component
 @RequestScope
 @RequiredArgsConstructor
 public class Rq {
-    private final MemberService memberService;
     private final HttpServletRequest req;
     private final HttpServletResponse resp;
-
-    // 일반
-    public boolean isAjax() {
-        if ("application/json".equals(req.getHeader("Accept"))) return true;
-        return "XMLHttpRequest".equals(req.getHeader("X-Requested-With"));
-    }
+    private final EntityManager entityManager;
+    private Member member;
 
     // 쿠키 관련
     public void setCookie(String name, String value) {
         Cookie cookie = new Cookie(name, value);
         cookie.setPath("/");
+        cookie.setDomain("localhost");
         resp.addCookie(cookie);
+    }
+
+    public void setCookie(String name, String value, int maxAge) {
+        Cookie cookie = new Cookie(name, value);
+        cookie.setPath("/");
+        cookie.setMaxAge(maxAge);
+        resp.addCookie(cookie);
+    }
+
+    private String getSiteCookieDomain() {
+        String cookieDomain = AppConfig.getSiteCookieDomain();
+
+        if (!cookieDomain.equals("localhost")) {
+            return cookieDomain = "." + cookieDomain;
+        }
+
+        return null;
     }
 
     public void setCrossDomainCookie(String name, String value) {
         ResponseCookie cookie = ResponseCookie.from(name, value)
                 .path("/")
-                .sameSite("None")
-                .secure(true)
-                .httpOnly(true)
+                .domain("localhost")
+                .httpOnly(false)
+                .build();
+
+        resp.addHeader("Set-Cookie", cookie.toString());
+    }
+
+    public void removeCrossDomainCookie(String name) {
+        removeCookie(name);
+        ResponseCookie cookie = ResponseCookie.from(name, null)
+                .path("/")
+                .maxAge(0)
+                .domain("localhost")
+                .httpOnly(false)
                 .build();
 
         resp.addHeader("Set-Cookie", cookie.toString());
@@ -43,7 +77,6 @@ public class Rq {
 
     public Cookie getCookie(String name) {
         Cookie[] cookies = req.getCookies();
-
         if (cookies == null) {
             return null;
         }
@@ -79,23 +112,127 @@ public class Rq {
 
     public void removeCookie(String name) {
         Cookie cookie = getCookie(name);
-
         if (cookie == null) {
             return;
         }
-
         cookie.setPath("/");
         cookie.setMaxAge(0);
         resp.addCookie(cookie);
+    }
 
-        ResponseCookie responseCookie = ResponseCookie.from(name, null)
-                .path("/")
-                .maxAge(0)
-                .sameSite("None")
-                .secure(true)
-                .httpOnly(true)
-                .build();
+    public Member getMember() {
+        if (isLogout()) return null;
 
-        resp.addHeader("Set-Cookie", responseCookie.toString());
+        if (member == null) {
+            member = entityManager.getReference(Member.class, getUser().getId());
+        }
+
+        return member;
+    }
+
+    public boolean isLogout() {
+        return !isLogin();
+    }
+
+    public boolean isLogin() {
+        return getUser() != null;
+    }
+
+    private SecurityUser getUser() {
+        return Optional.ofNullable(SecurityContextHolder.getContext())
+                .map(context -> context.getAuthentication())
+                .filter(authentication -> authentication.getPrincipal() instanceof SecurityUser)
+                .map(authentication -> (SecurityUser) authentication.getPrincipal())
+                .orElse(null);
+    }
+
+    public void setLogin(SecurityUser securityUser) {
+        SecurityContextHolder.getContext().setAuthentication(securityUser.genAuthentication());
+        System.out.println(SecurityContextHolder.getContext().getAuthentication());
+    }
+
+    public String getHeader(String name) {
+        return req.getHeader(name);
+    }
+
+
+
+    public void setStatusCode(int statusCode) {
+        resp.setStatus(statusCode);
+    }
+
+    public String getReferer(String defaultValue) {
+        String referer = req.getHeader("Referer");
+
+        if (referer == null) {
+            return defaultValue;
+        }
+
+        return referer;
+    }
+
+    public boolean isFrontUrl(String url) {
+        return url.startsWith(AppConfig.getSiteFrontUrl());
+    }
+
+    public void destroySession() {
+        req.getSession().invalidate();
+    }
+
+    public void setLogout() {
+        removeCrossDomainCookie("accessToken");
+        removeCrossDomainCookie("RefreshToken");
+        SecurityContextHolder.getContext().setAuthentication(null);
+    }
+
+    public void setSession(String name, String value) {
+        req.getSession().setAttribute(name, value);
+    }
+
+    public void setAttribute(String name, Object value) {
+        req.setAttribute(name, value);
+    }
+
+    public String redirect(String url, String msg) {
+        msg = URLEncoder.encode(msg, StandardCharsets.UTF_8);
+
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("redirect:");
+        sb.append(url);
+
+        if (msg != null) {
+            sb.append("?msg=");
+            sb.append(msg);
+        }
+
+        return sb.toString();
+    }
+
+    public String historyBack(String msg) {
+        req.setAttribute("failMsg", msg);
+
+        return "global/js";
+    }
+
+    public String redirectOrBack(RsData<?> rs, String path) {
+        if (rs.isFail()) return historyBack(rs.getMsg());
+
+        return redirect(path, rs.getMsg());
+    }
+
+    public boolean isAdmin() {
+        if (isLogout()) return false;
+
+        return getUser()
+                .getAuthorities()
+                .stream()
+                .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
+    }
+
+
+
+    public void setHeader(String name, String value) {
+        resp.setHeader(name, value);
     }
 }

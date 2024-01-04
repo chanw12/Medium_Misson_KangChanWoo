@@ -3,18 +3,16 @@
     import { onMount } from 'svelte';
     import {getCookie} from "../../../util/getCookie.ts";
     import {usernameStore} from "$lib/stores/store.js";
+    import rq from "../../../util/rq.svelte.ts";
 
     let title = $state('')
     let body = $state('')
     let published = $state(false)
-    let cookieValue = $state('')
     let paid = $state(false);
     let file = $state();
     $effect(()=> {
-        cookieValue = getCookie("accessJwtToken")
-
-        if ($usernameStore == null) {
-            location.href = "/member/login";
+        if(rq.isLogout()){
+            location.href="/member/login"
         }
         }
     )
@@ -38,12 +36,15 @@
         }
 
         try{
+            const accessToken = getCookie('accessToken');
+            const refreshToken = getCookie('RefreshToken')
             const res = await axios.post('http://localhost:8090/api/post/write',formData,
                 {
                     headers: {
                         'Content-Type': 'multipart/form-data',
-                        'Authorization' : `Bearer ${cookieValue}`
+                        'Authorization': `Bearer ${refreshToken}#${accessToken}`
                     }
+
                 })
                 .then(res=>{
                     console.log('Post and file uploaded successfully:', res.data);

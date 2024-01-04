@@ -6,6 +6,7 @@
     let username = $state('')
     let password = $state('')
     let passwordconfirm = $state('')
+    let nickname = $state('')
     let errorMsg = $state([])
     let result = null
 
@@ -17,7 +18,8 @@
             {
                 username,
                 password,
-                passwordconfirm
+                passwordconfirm,
+                nickname
             }
             )
             .then(res =>{
@@ -64,6 +66,8 @@
         <input bind:value={username} type="text" placeholder="ID" class="input input-bordered input-sm w-full max-w-xs" />
         <input bind:value={password} id="password" type="password" placeholder="Password" class="input input-bordered input-sm w-full max-w-xs" />
         <input bind:value={passwordconfirm} id="passwordconfirm" type="password" placeholder="Password Confirm" class="input input-bordered input-sm w-full max-w-xs" />
+        <input bind:value={nickname} id="nickname" type="text" placeholder="Nickname" class="input input-bordered input-sm w-full max-w-xs" />
+
         <button type="submit" class="btn btn-primary w-full max-w-xs">회원가입</button>
     </form>
 </div>

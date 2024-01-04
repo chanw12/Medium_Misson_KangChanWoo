@@ -7,4 +7,6 @@ import java.util.Optional;
 public interface MemberRepositoryCustom {
     public Optional<Member> findByUserName(String username);
 
+    public Optional<Member> findByRefreshToken(String refreshToken);
+
 }
