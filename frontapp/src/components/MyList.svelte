@@ -10,6 +10,8 @@
     })
     let postList = $state([]);
     let errorMsg = $state("");
+    const backUrl = import.meta.env.VITE_BACK_API_URL;
+    const frontUrl = import.meta.env.VITE_FRONT_URL;
 
     function hideErrorMessage() {
         setTimeout(function() {
@@ -38,7 +40,7 @@
             const accessToken = getCookie('accessToken');
             const refreshToken = getCookie('RefreshToken')
 
-            const response = await axios.get('http://localhost:8090/api/post/myList',{
+            const response = await axios.get(`${backUrl}/api/post/myList`,{
                 headers: {
                     Authorization: `Bearer ${refreshToken}#${accessToken}`
                 }
@@ -58,7 +60,7 @@
     {/if}
 <div class="flex-row">
     <div class="absolute top-20 right-8">
-        <a href="http://localhost:5173/post/write" class="btn btn-primary">글 작성</a>
+        <a href="/post/write" class="btn btn-primary">글 작성</a>
     </div>
     <div class="overflow-x-auto">
 

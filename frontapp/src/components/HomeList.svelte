@@ -9,6 +9,8 @@
     })
     let homeList = $state([]);
     let errorMsg = $state("");
+    const backUrl = import.meta.env.VITE_BACK_API_URL;
+    const frontUrl = import.meta.env.VITE_FRONT_URL;
     function hideErrorMessage() {
         setTimeout(function() {
             var errorAlert = document.getElementById('errorAlert');
@@ -34,7 +36,7 @@
         try {
             // JWT 토큰을 쿠키에서 가져오기
             // 유저 정보를 가져오기 위한 요청
-            const response = await axios.get('http://localhost:8090/api/homelist');
+            const response = await axios.get(`${backUrl}/api/homelist`);
             homeList = response.data;
         } catch (error) {
             console.error('Error fetching user information:', error);
@@ -50,7 +52,7 @@
 {/if}
 <div class="flex-row">
     <div class="absolute top-20 right-8">
-        <a href="http://localhost:5173/post/write" class="btn btn-primary">글 작성</a>
+        <a href="${frontUrl}/post/write" class="btn btn-primary">글 작성</a>
     </div>
 <div class="overflow-x-auto">
 

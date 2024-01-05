@@ -4,6 +4,8 @@
     import axios from "axios";
     import {navigate} from "svelte-routing";
     export let data;
+    const backUrl = import.meta.env.VITE_BACK_API_URL;
+    const frontUrl = import.meta.env.VITE_FRONT_URL;
 
     let published;
     let title;
@@ -15,7 +17,7 @@
         try {
             const accessToken = getCookie('accessToken')
             const refreshToken = getCookie('RefreshToken')
-            const Response = await axios.get(`http://localhost:8090/api/post/${data.id}`,{
+            const Response = await axios.get(`${backUrl}/api/post/${data.id}`,{
                 headers: {
                     Authorization: `Bearer ${refreshToken}#${accessToken}`
                 }
@@ -32,7 +34,7 @@
         try{
             const accessToken = getCookie('accessToken')
             const refreshToken = getCookie('RefreshToken')
-            const res = await axios.put(`http://localhost:8090/api/post/${data.id}/modify`,
+            const res = await axios.put(`${backUrl}/api/post/${data.id}/modify`,
                 {
                     title,body,published
                 },

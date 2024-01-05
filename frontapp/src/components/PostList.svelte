@@ -11,6 +11,8 @@
     let category;
     let kw;
     let sort;
+    const backUrl = import.meta.env.VITE_BACK_API_URL;
+    const frontUrl = import.meta.env.VITE_FRONT_URL;
 
     $effect(() => {
         const pageQuery = $page.url.searchParams.get('page');
@@ -56,7 +58,7 @@
         try {
             const accessToken = getCookie('accessToken')
             const refreshToken = getCookie('RefreshToken')
-            let url = "http://localhost:8090/api/post/list"
+            let url = `${backUrl}/api/post/list`
             if(pageNum || pageNum === 0){
                 url += `?page=${pageNum}`
             }
@@ -121,7 +123,7 @@
 {/if}
 <div class="flex-row ">
     <div class="absolute top-20 right-8">
-        <a href="http://localhost:5173/post/write" class="btn btn-primary">글 작성</a>
+        <a href="/post/write" class="btn btn-primary">글 작성</a>
     </div>
     <div class="overflow-x-auto">
 

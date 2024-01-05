@@ -11,6 +11,9 @@
 
     let username = $state(null)
     let showSearch = $state(false);
+
+    const backUrl = import.meta.env.VITE_BACK_API_URL;
+    const frontUrl = import.meta.env.VITE_FRONT_URL;
     onMount(()=>{
         rq.initAuth();
     })
@@ -28,9 +31,8 @@
 
     async function handleSearch() {
         const searchQuery = document.getElementById('searchQuery').value;
-        console.log(`검색어: ${searchQuery}, 카테고리: ${$selectedCategory}, 정렬: ${$selectedSorting}`);
         $searchKeyword = searchQuery
-        // const res = await axios.get(`http://localhost:8090/api/post/list?kw=${searchQuery}&sortCode=${$selectedSorting}&kwType=${$selectedCategory}`);
+        const res = await axios.get(`${backUrl}/api/post/list?kw=${searchQuery}&sortCode=${$selectedSorting}&kwType=${$selectedCategory}`);
         location.href=`/post/list?kw=${searchQuery}&kwType=${$selectedCategory}&sortCode=${$selectedSorting}`
     }
 </script>
@@ -49,12 +51,12 @@
                 <li><a>유저 &nbsp : &nbsp  {rq.member.username}</a></li>
                     <div class="w-full h-0.5 bg-[#ccc]"></div>
 
-                <li><a href="http://localhost:5173/post/myList">내 글 목록</a></li>
+                <li><a href="/post/myList">내 글 목록</a></li>
                 <li><button class="items-start" on:click={fetchLogout}>로그아웃</button></li>
                 {/if}
-                <li><a href="http://localhost:5173/post/list">전체 글 목록</a></li>
+                <li><a href="/post/list">전체 글 목록</a></li>
                 {#if rq.isLogout()}
-                    <li><a href="http://localhost:5173/member/login">로그인</a></li>
+                    <li><a href="/member/login">로그인</a></li>
                 {/if}
             </ul>
             <ul class="flex space-x-4">

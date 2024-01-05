@@ -5,12 +5,13 @@
     import {usernameStore} from "$lib/stores/store.js";
     import {sineOut} from "svelte/easing";
 
-    const backUrl = import.meta.env.VITE_BACK_API_URL;
     let username = $state('')
     let password = $state('')
     let errorMsg = $state('')
     let accessToken = $state('')
     let RefreshToken = $state('')
+    const backUrl = import.meta.env.VITE_BACK_API_URL;
+    const frontUrl = import.meta.env.VITE_FRONT_URL;
 
 
     function hideErrorMessage() {
@@ -22,7 +23,7 @@
 
 
     async function fetchLogin(){
-        const res = await axios.post('http://localhost:8090/api/login', {
+        const res = await axios.post(`${backUrl}/api/login`, {
             username,
             password,
         }, {
@@ -56,6 +57,8 @@
     <svg class="h-6 w-6 fill-current md:h-8 md:w-8" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M15.41,16.58L10.83,12L15.41,7.41L14,6L8,12L14,18L15.41,16.58Z"></path></svg>
 
 </button>
+
+
 <div class="flex-col items-center min-h-screen justify-center">
     <div class="text-4xl font-bold mb-6 text-center">Login</div>
     {#if errorMsg !== ''}
@@ -78,9 +81,9 @@
 
     <div class="flex space-x-4 items-center justify-center">
         <a href="{backUrl}/member/socialLogin?redirectUrl=http://localhost:5173">
+<!--            TODO: 여기 링크 수정 해야됨-->
             <img class="items-center justify-center" src="https://ghuazvmjviqg21655229.cdn.ntruss.com/prjimg/kakao_login_medium_wide.png" height="45" width="300"/>
         </a>
     </div>
-    <div>{backUrl}</div>
 
 </div>

@@ -9,12 +9,14 @@
     let nickname = $state('')
     let errorMsg = $state([])
     let result = null
+    const backUrl = import.meta.env.VITE_BACK_API_URL;
+    const frontUrl = import.meta.env.VITE_FRONT_URL;
 
     function hideErrorMessage() {
         errorMsg = ""; // 에러 메시지 비우기
     }
     async function fetchJoin(){
-        const res = await axios.post('http://localhost:8090/api/member/join',
+        const res = await axios.post(`${backUrl}/api/member/join`,
             {
                 username,
                 password,

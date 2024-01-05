@@ -10,6 +10,8 @@
     let published = $state(false)
     let paid = $state(false);
     let file = $state();
+    const backUrl = import.meta.env.VITE_BACK_API_URL;
+    const frontUrl = import.meta.env.VITE_FRONT_URL;
     $effect(()=> {
         if(rq.isLogout()){
             location.href="/member/login"
@@ -38,7 +40,7 @@
         try{
             const accessToken = getCookie('accessToken');
             const refreshToken = getCookie('RefreshToken')
-            const res = await axios.post('http://localhost:8090/api/post/write',formData,
+            const res = await axios.post(`${backUrl}/api/post/write`,formData,
                 {
                     headers: {
                         'Content-Type': 'multipart/form-data',

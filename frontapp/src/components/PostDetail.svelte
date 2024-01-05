@@ -17,6 +17,9 @@
     let votenum
     let errorMsg;
 
+    const backUrl = import.meta.env.VITE_BACK_API_URL;
+    const frontUrl = import.meta.env.VITE_FRONT_URL;
+
     onMount(()=>{
         fetchPostData();
         fetchCommentData();
@@ -41,13 +44,13 @@
             const accessToken = getCookie('accessToken')
             const refreshToken = getCookie('RefreshToken')
 
-            const checkVoteResponse = await axios.get(`http://localhost:8090/api/post/${data.id}/check-like`, {
+            const checkVoteResponse = await axios.get(`${backUrl}/api/post/${data.id}/check-like`, {
                 headers: {
                     Authorization: `Bearer ${refreshToken}#${accessToken}`
                 }
             });
             if(!checkVoteResponse.data){
-                const res = await axios.delete(`http://localhost:8090/api/post/${data.id}/canCellike`,
+                const res = await axios.delete(`${backUrl}/api/post/${data.id}/canCellike`,
                     {
                         headers: {
                             Authorization: `Bearer ${refreshToken}#${accessToken}`
@@ -59,7 +62,7 @@
 
             }else{
 
-                const Response = await axios.post(`http://localhost:8090/api/post/${data.id}/like`,{
+                const Response = await axios.post(`${backUrl}/api/post/${data.id}/like`,{
                     },
                     {
                         headers: {
@@ -82,7 +85,7 @@
         try {
             const accessToken = getCookie('accessToken')
             const refreshToken = getCookie('RefreshToken')
-            const Response = await axios.post(`http://localhost:8090/api/comment/modify/${id}`,{
+            const Response = await axios.post(`${backUrl}/api/comment/modify/${id}`,{
                     body
                 },
                 {
@@ -103,7 +106,7 @@
         try {
             const accessToken = getCookie('accessToken')
             const refreshToken = getCookie('RefreshToken')
-            const Response = await axios.get(`http://localhost:8090/api/comment/get/${data.id}`,{
+            const Response = await axios.get(`${backUrl}/api/comment/get/${data.id}`,{
                 headers: {
                     Authorization: `Bearer ${refreshToken}#${accessToken}`
                 }
@@ -119,7 +122,7 @@
         const id = event.currentTarget.dataset.data;
         const accessToken = getCookie('accessToken')
         const refreshToken = getCookie('RefreshToken')
-            const Response = await axios.delete(`http://localhost:8090/api/comment/delete/${id}`,{
+            const Response = await axios.delete(`${backUrl}/api/comment/delete/${id}`,{
                 headers: {
                     Authorization: `Bearer ${refreshToken}#${accessToken}`
                 }
@@ -136,7 +139,7 @@
         try {
             const accessToken = getCookie('accessToken')
             const refreshToken = getCookie('RefreshToken')
-            const Response = await axios.get(`http://localhost:8090/api/post/${data.id}`,{
+            const Response = await axios.get(`${backUrl}/api/post/${data.id}`,{
                 headers: {
                     Authorization: `Bearer ${refreshToken}#${accessToken}`
                 }
@@ -154,7 +157,7 @@
     async function deletePost(){
         const accessToken = getCookie('accessToken')
         const refreshToken = getCookie('RefreshToken')
-        const res = await axios.delete(`http://localhost:8090/api/post/${data.id}/delete`,
+        const res = await axios.delete(`${backUrl}/api/post/${data.id}/delete`,
         {
             headers: {
                 Authorization: `Bearer ${refreshToken}#${accessToken}`
@@ -166,7 +169,7 @@
     async function writeComment(){
         const accessToken = getCookie('accessToken')
         const refreshToken = getCookie('RefreshToken')
-        const res = await axios.post(`http://localhost:8090/api/comment/write`,
+        const res = await axios.post(`${backUrl}/api/comment/write`,
             {
                 body:commentbody,username:author,post_id
             },
@@ -199,7 +202,7 @@
         <p class="text-gray-600 mb-2">작성자: {author}</p>
         {#if ($usernameStore == author)}
             <div class="mb-5 mx-2">
-                <a href="http://localhost:5173/post/{data.id}/modify" class="btn btn-sm btn-primary ">글 수정</a>
+                <a href="/post/{data.id}/modify" class="btn btn-sm btn-primary ">글 수정</a>
                 <a on:click={deletePost}  class="btn btn-sm btn-error ">글 삭제</a>
             </div>
         {/if}
