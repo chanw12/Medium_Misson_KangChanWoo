@@ -6,14 +6,18 @@ import com.ll.medium.domain.member.service.MemberService;
 import com.ll.medium.domain.post.entity.Post;
 import com.ll.medium.domain.post.form.PostWriteForm;
 import com.ll.medium.domain.post.repository.PostRepository;
+import com.ll.medium.global.rq.Rq;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.nio.file.AccessDeniedException;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -24,25 +28,37 @@ import java.util.Optional;
 public class PostService {
     private final MemberService memberService;
     private final PostRepository postRepository;
+    @Value("${cdn.baseurl}")
+    private String cdnurl;
+
+    private final Rq rq;
 
     public Optional<Post> write(PostWriteForm postWriteForm){
+
         Post post = Post.builder()
                 .title(postWriteForm.getTitle())
                 .body(postWriteForm.getBody())
                 .author(memberService.getMyUserWithAuthorities().get())
                 .isPublished(postWriteForm.isPublished())
+                .isPaid(postWriteForm.isPaid())
+                .imgUrl(postWriteForm.getFile() != null ? cdnurl + postWriteForm.getFile().getOriginalFilename() : null)
                 .build();
 
         return Optional.of(postRepository.save(post));
     }
     public Page<Post> getList(int page,List<Sort.Order> sorts){
-
         Pageable pageable = PageRequest.of(page,10,Sort.by(sorts));
         return postRepository.getListIsPublished(pageable);
     }
 
-    public Post getPost(Long id){
-        return postRepository.findById(id).get();
+    public Post getPost(Long id) throws AccessDeniedException {
+        Post post = postRepository.findById(id)
+                .orElseThrow(()->new NoSuchElementException("Post not Found"));
+        if(post.isPaid() && !post.getAuthor().getUsername().equals(rq.getMember().getUsername()) && !SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream().anyMatch(grantedAuthority ->
+                grantedAuthority.getAuthority().equals("ROLE_PAID"))){
+            throw new AccessDeniedException("유료 멤버십 회원만 이 글을 볼 수 있습니다");
+        }
+        return post;
     }
     public void delete(Long id){
         Post post = postRepository.findById(id).orElseThrow(NoSuchElementException::new);
@@ -69,7 +85,7 @@ public class PostService {
     }
 
     public Object getMyList(int page,String username) {
-        Pageable pageable = PageRequest.of(page-1,10);
+        Pageable pageable = PageRequest.of(page,10);
         return postRepository.getMyList(pageable,username);
     }
 
@@ -91,5 +107,9 @@ public class PostService {
     public Page<Post> search(List<String> kwTypes, String kw, int page, List<Sort.Order> sorts) {
         Pageable pageable = PageRequest.of(page,10,Sort.by(sorts));
         return postRepository.search(kwTypes,kw,pageable);
+    }
+
+    public void deleteAll(){
+        postRepository.deleteAll();
     }
 }

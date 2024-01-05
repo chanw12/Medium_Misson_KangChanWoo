@@ -15,11 +15,21 @@
     let commentlist = ([]);
     let editingCommentId;
     let votenum
+    let errorMsg;
 
     onMount(()=>{
         fetchPostData();
         fetchCommentData();
     })
+
+    function hideErrorMessage() {
+        setTimeout(function() {
+            var errorAlert = document.getElementById('errorAlert');
+            if (errorAlert) {
+                errorAlert.style.display = 'none';
+            }
+        }, 5000);
+    }
 
     const handleEditClick = (id) => {
         editingCommentId = id;
@@ -28,17 +38,19 @@
     const fetchAddVote = async (id) => {
 
         try {
-            const token = getCookie('accessJwtToken')
+            const accessToken = getCookie('accessToken')
+            const refreshToken = getCookie('RefreshToken')
+
             const checkVoteResponse = await axios.get(`http://localhost:8090/api/post/${data.id}/check-like`, {
                 headers: {
-                    Authorization: `Bearer ${token}`,
+                    Authorization: `Bearer ${refreshToken}#${accessToken}`
                 }
             });
             if(!checkVoteResponse.data){
                 const res = await axios.delete(`http://localhost:8090/api/post/${data.id}/canCellike`,
                     {
                         headers: {
-                            Authorization: `Bearer ${token}`,
+                            Authorization: `Bearer ${refreshToken}#${accessToken}`
                         }
                     }).then(res=>res);
                 if(res.status == 200){
@@ -51,7 +63,7 @@
                     },
                     {
                         headers: {
-                            Authorization: `Bearer ${token}`,
+                            Authorization: `Bearer ${refreshToken}#${accessToken}`
                         }
                     }).then((res=>res));
                 if(Response.status == 200){
@@ -68,13 +80,14 @@
     const fetchModiComment = async (id,body) => {
 
         try {
-            const token = getCookie('accessJwtToken')
+            const accessToken = getCookie('accessToken')
+            const refreshToken = getCookie('RefreshToken')
             const Response = await axios.post(`http://localhost:8090/api/comment/modify/${id}`,{
                     body
                 },
                 {
                     headers: {
-                        Authorization: `Bearer ${token}`,
+                        Authorization: `Bearer ${refreshToken}#${accessToken}`
                     }
                 }).then(res=>{
 
@@ -88,11 +101,12 @@
 
     const fetchCommentData = async () => {
         try {
-            const token = getCookie('accessJwtToken')
+            const accessToken = getCookie('accessToken')
+            const refreshToken = getCookie('RefreshToken')
             const Response = await axios.get(`http://localhost:8090/api/comment/get/${data.id}`,{
                 headers: {
-                    Authorization: `Bearer ${token}`, // JWT 토큰을 헤더에 추가
-                },
+                    Authorization: `Bearer ${refreshToken}#${accessToken}`
+                }
             }).then(res=>{
                 console.log(res.data)
                 commentlist = res.data;
@@ -103,11 +117,12 @@
     };
     const fetchDeleteComment = async (event) => {
         const id = event.currentTarget.dataset.data;
-            const token = getCookie('accessJwtToken')
+        const accessToken = getCookie('accessToken')
+        const refreshToken = getCookie('RefreshToken')
             const Response = await axios.delete(`http://localhost:8090/api/comment/delete/${id}`,{
                 headers: {
-                    Authorization: `Bearer ${token}`, // JWT 토큰을 헤더에 추가
-                },
+                    Authorization: `Bearer ${refreshToken}#${accessToken}`
+                }
             }).then(()=>{
                 fetchCommentData()
                 location.reload()
@@ -119,41 +134,45 @@
 
     const fetchPostData = async () => {
         try {
-            const token = getCookie('accessJwtToken')
+            const accessToken = getCookie('accessToken')
+            const refreshToken = getCookie('RefreshToken')
             const Response = await axios.get(`http://localhost:8090/api/post/${data.id}`,{
                 headers: {
-                    Authorization: `Bearer ${token}`, // JWT 토큰을 헤더에 추가
-                },
+                    Authorization: `Bearer ${refreshToken}#${accessToken}`
+                }
             });
-            console.log(Response);
             title = Response.data.title;
             author = Response.data.author.username;
             body =Response.data.body;
             votenum = Response.data.voter.length
         } catch (error) {
-            console.error('Error fetching information:', error);
+            console.error('Error fetching information:', error.response.data.message);
+            errorMsg = error.response.data.message;
+            hideErrorMessage();
         }
     };
     async function deletePost(){
-        const token = getCookie('accessJwtToken')
+        const accessToken = getCookie('accessToken')
+        const refreshToken = getCookie('RefreshToken')
         const res = await axios.delete(`http://localhost:8090/api/post/${data.id}/delete`,
         {
             headers: {
-                Authorization: `Bearer ${token}`,
+                Authorization: `Bearer ${refreshToken}#${accessToken}`
             }
         });
         location.href="/"
     }
 
     async function writeComment(){
-        const token = getCookie('accessJwtToken')
+        const accessToken = getCookie('accessToken')
+        const refreshToken = getCookie('RefreshToken')
         const res = await axios.post(`http://localhost:8090/api/comment/write`,
             {
                 body:commentbody,username:author,post_id
             },
             {
                 headers: {
-                    Authorization: `Bearer ${token}`,
+                    Authorization: `Bearer ${refreshToken}#${accessToken}`
                 }
             }).then(()=>{
             fetchCommentData()
@@ -161,7 +180,17 @@
             });
     }
 
+
 </script>
+{#if errorMsg}
+<div id="errorAlert" role="alert" class="alert alert-error w-1/4 fixed top-10 right-10">
+    <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+    <span>{errorMsg}</span>
+</div>
+    {/if}
+
+
+
 
 <div class="max-w-4xl mx-auto my-8">
 

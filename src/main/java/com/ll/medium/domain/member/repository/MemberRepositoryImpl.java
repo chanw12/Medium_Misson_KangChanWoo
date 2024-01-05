@@ -24,6 +24,11 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
         return member;
     }
 
-
-
+    @Override
+    public Optional<Member> findByRefreshToken(String refreshToken) {
+        QMember qMember = QMember.member;
+        Optional<Member> member = jpaQueryFactory.selectFrom(qMember).where(qMember.refreshToken.eq(refreshToken))
+                .stream().findFirst();
+        return member;
+    }
 }

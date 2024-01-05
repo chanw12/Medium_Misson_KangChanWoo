@@ -13,4 +13,7 @@ public class MemberJoinForm {
     private String password;
     @NotEmpty(message = "passwordconfirm은 필수항목입니다")
     private String passwordconfirm;
+    @NotEmpty(message = "닉네임은 필수항복입니다")
+    private String nickname;
+
 }

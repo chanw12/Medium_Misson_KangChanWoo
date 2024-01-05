@@ -39,10 +39,9 @@ public class Post extends BaseEntity {
     @ManyToMany
     Set<Member> voter;
 
+    private boolean isPaid;
 
-//    @OneToMany(mappedBy = "post", orphanRemoval = true, cascade = {CascadeType.ALL})
-//    @Builder.Default
-//    @ToString.Exclude
-//    private Set<PostTag> postTags = new HashSet<>();
+    private String imgUrl;
+
 
 }

@@ -13,11 +13,12 @@
     })
     const fetchPostData = async () => {
         try {
-            const token = getCookie('accessJwtToken')
+            const accessToken = getCookie('accessToken')
+            const refreshToken = getCookie('RefreshToken')
             const Response = await axios.get(`http://localhost:8090/api/post/${data.id}`,{
                 headers: {
-                    Authorization: `Bearer ${token}`, // JWT 토큰을 헤더에 추가
-                },
+                    Authorization: `Bearer ${refreshToken}#${accessToken}`
+                }
             })
             title = Response.data.title;
             body =Response.data.body;
@@ -29,14 +30,15 @@
 
     async function handleSubmit(){
         try{
-            const token = getCookie('accessJwtToken')
+            const accessToken = getCookie('accessToken')
+            const refreshToken = getCookie('RefreshToken')
             const res = await axios.put(`http://localhost:8090/api/post/${data.id}/modify`,
                 {
                     title,body,published
                 },
                 {
                     headers: {
-                        Authorization: `Bearer ${token}`
+                        Authorization: `Bearer ${refreshToken}#${accessToken}`
                     }
                 }).then(
                 location.href = `/post/${data.id}`

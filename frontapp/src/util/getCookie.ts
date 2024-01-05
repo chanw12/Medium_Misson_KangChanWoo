@@ -1,4 +1,4 @@
-// getCookie.js
+
 export function getCookie(name: string | any[]) {
     const decodedCookie = decodeURIComponent(document.cookie);
     const cookies = decodedCookie.split(';');

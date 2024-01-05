@@ -4,12 +4,17 @@ import com.ll.medium.domain.member.entity.Member;
 import com.ll.medium.domain.post.entity.Post;
 import com.ll.medium.domain.post.entity.QPost;
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.Order;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.PathBuilder;
+import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,11 +27,23 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
     @Override
     public Page<Post> getListIsPublished(Pageable pageable) {
         QPost qPost = QPost.post;;
-        List<Post> list = jpaQueryFactory.selectFrom(qPost)
-                .where(qPost.isPublished.eq(true))
+        JPQLQuery<Post> query = jpaQueryFactory.selectFrom(qPost)
+                .where(qPost.isPublished.eq(true));
+
+        // Pageable에서 Sort 정보를 가져와 쿼리에 적용
+        for (Sort.Order order : pageable.getSort()) {
+            PathBuilder<Post> entityPath = new PathBuilder<>(Post.class, "post");
+
+            query = query.orderBy(new OrderSpecifier(
+                    order.isAscending() ? Order.ASC : Order.DESC,
+                    entityPath.get(order.getProperty())));
+        }
+
+        List<Post> list = query
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
+
 
         long total = jpaQueryFactory.selectFrom(qPost)
                 .where(qPost.isPublished.eq(true))
@@ -131,14 +148,23 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
             if (combinedCondition != null) {
                 builder.and(combinedCondition);
             }
-
-
-
-
         }
-        List<Post> list = jpaQueryFactory.selectDistinct(qPost)
-                .from(qPost)
-                .where(builder)
+        builder.and(qPost.isPublished.eq(true));
+
+
+        JPQLQuery<Post> query = jpaQueryFactory.selectFrom(qPost)
+                .where(builder);
+
+        // Pageable에서 Sort 정보를 가져와 쿼리에 적용
+        for (Sort.Order order : pageable.getSort()) {
+            PathBuilder<Post> entityPath = new PathBuilder<>(Post.class, "post");
+
+            query = query.orderBy(new OrderSpecifier(
+                    order.isAscending() ? Order.ASC : Order.DESC,
+                    entityPath.get(order.getProperty())));
+        }
+
+        List<Post> list = query
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();

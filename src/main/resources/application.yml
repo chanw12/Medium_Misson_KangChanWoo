@@ -17,6 +17,23 @@ spring:
     username: sa
     password:
     driver-class-name: org.h2.Driver
+  security:
+    oauth2:
+      client:
+        registration:
+          kakao:
+            client-id: ${kakao.api-key}
+            redirect-uri: http://localhost:8090/login/oauth2/code/kakao
+            client-authentication-method: client_secret_post
+            authorization-grant-type: authorization_code
+            scope: profile_nickname, profile_image
+            client-name: Kakao
+        provider:
+          kakao:
+            authorization_uri: https://kauth.kakao.com/oauth/authorize
+            token_uri: https://kauth.kakao.com/oauth/token
+            user-info-uri: https://kapi.kakao.com/v2/user/me
+            user_name_attribute: id
 
   jpa:
     hibernate:
@@ -32,6 +49,9 @@ spring:
     redis:
       port: 6379
       host: localhost
+  jackson:
+    serialization:
+      fail-on-empty-beans: false
 logging:
   level:
     com.ll.medium: DEBUG
@@ -40,12 +60,21 @@ logging:
     org.hibernate.orm.jdbc.extract: TRACE
     org.springframework.transaction.interceptor: TRACE
 custom:
+  dev:
+    cookieDomain: localhost
+    frontUrl: "http://${custom.dev.cookieDomain}:5173"
+    backUrl: "http://${custom.dev.cookieDomain}:${server.port}"
+  production:
+    cookieDomain: medium.oa.gg
+    frontUrl: "https://${custom.production.cookieDomain}"
+    backUrl: "https://api.${custom.production.cookieDomain}"
   site:
+    cookieDomain: "${custom.dev.cookieDomain}"
+    frontUrl: "${custom.dev.frontUrl}"
+    backUrl: "${custom.dev.backUrl}"
     name: medium
-    baseUrl: "http://localhost:8090"
-  tempDirPath: c:/temp/medium_dev/temp
-  genFile:
-    dirPath: /Users/chanw12/Documents
+  accessToken:
+    expirationSec: '#{60*60}'
 
 jwt:
   header: Authorization
