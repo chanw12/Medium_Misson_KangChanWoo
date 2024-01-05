@@ -73,7 +73,7 @@
         <button type="submit" class="btn btn-primary w-full max-w-xs">로그인</button>
     </form>
     <div class="flex space-x-4 items-center justify-center">
-        <a href="http://localhost:5173/member/join" class="btn btn-neutral w-full max-w-xs">회원가입</a>
+        <a href="/member/join" class="btn btn-neutral w-full max-w-xs">회원가입</a>
     </div>
     <hr class="my-4 border-t border-gray-300 w-full max-w-sm mx-auto" />
 
