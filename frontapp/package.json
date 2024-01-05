@@ -51,7 +51,6 @@
 		"axios": "^1.6.2",
 		"marked": "^11.1.0",
 		"openapi-fetch": "^0.8.2",
-		"react-cookie": "^6.1.1",
 		"svelte-routing": "^2.10.0",
 		"svelte-spa-router": "^4.0.0"
 	}
