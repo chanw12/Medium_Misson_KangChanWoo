@@ -1,13 +1,11 @@
 
 <script>
     import axios from "axios";
-    import {Cookies} from 'react-cookie';
     import {getCookie} from "../../../util/getCookie.ts";
     import {usernameStore} from "$lib/stores/store.js";
 
     import {sineOut} from "svelte/easing";
 
-    const cookies = new Cookies();
 
     let username = $state('')
     let password = $state('')
