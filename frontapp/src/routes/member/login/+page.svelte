@@ -3,10 +3,9 @@
     import axios from "axios";
     import {getCookie} from "../../../util/getCookie.ts";
     import {usernameStore} from "$lib/stores/store.js";
-
     import {sineOut} from "svelte/easing";
 
-
+    const backUrl = import.meta.env.VITE_BACK_API_URL;
     let username = $state('')
     let password = $state('')
     let errorMsg = $state('')
@@ -78,9 +77,10 @@
     <hr class="my-4 border-t border-gray-300 w-full max-w-sm mx-auto" />
 
     <div class="flex space-x-4 items-center justify-center">
-        <a href="http://localhost:8090/member/socialLogin?redirectUrl=http://localhost:5173">
+        <a href="{backUrl}/member/socialLogin?redirectUrl=http://localhost:5173">
             <img class="items-center justify-center" src="https://ghuazvmjviqg21655229.cdn.ntruss.com/prjimg/kakao_login_medium_wide.png" height="45" width="300"/>
         </a>
     </div>
+    <div>{backUrl}</div>
 
 </div>
