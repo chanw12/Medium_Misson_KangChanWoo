@@ -1,9 +1,9 @@
-# fly.toml app configuration file generated for medium-misson-kangchanwoo on 2024-01-05T13:14:16+09:00
+# fly.toml app configuration file generated for chanw-512 on 2024-01-09T09:39:42+09:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
-app = "medium-misson-kangchanwoo"
+app = "chanw-512"
 primary_region = "nrt"
 
 [build]

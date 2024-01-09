@@ -12,11 +12,16 @@ spring:
   threads:
     virtual:
       enabled: true
+#  datasource:
+#    url: jdbc:h2:tcp://localhost/~/medium_dev;MODE=MYSQL
+#    username: sa
+#    password:
+#    driver-class-name: org.h2.Driver
   datasource:
-    url: jdbc:h2:tcp://localhost/~/medium_dev;MODE=MYSQL
-    username: sa
-    password:
-    driver-class-name: org.h2.Driver
+    url: jdbc:mysql://db-kv8s7.pub-cdb.ntruss.com/medium
+    username: mysql_dba
+    password: lldj123414@
+    driver-class-name: com.mysql.cj.jdbc.Driver
   security:
     oauth2:
       client:
@@ -45,10 +50,6 @@ spring:
         format_sql: true
         highlight_sql: true
         use_sql_comments: true
-  data:
-    redis:
-      port: 6379
-      host: localhost
   jackson:
     serialization:
       fail-on-empty-beans: false

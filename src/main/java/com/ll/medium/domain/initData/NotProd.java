@@ -12,12 +12,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.transaction.annotation.Transactional;
 
-@Configuration
-// @Profile("!prod") // TODO : prod 환경에서는 주석 처리해제해야 함
+//@Configuration
+//@Profile("!prod")
 @Slf4j
 @RequiredArgsConstructor
 public class NotProd {

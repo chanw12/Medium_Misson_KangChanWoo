@@ -4,7 +4,6 @@ import com.ll.medium.global.jwt.JwtAccessDeniedHandler;
 import com.ll.medium.global.jwt.JwtAuthenticationEntryPoint;
 import com.ll.medium.global.jwt.JwtFilter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -60,7 +59,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(request ->
                         request.requestMatchers("/member/socialLogin","/api/**","/login/oauth2/code/kakao","/api/logout","/api/login","/api/member/join","/favicon.ico","/api/homelist","/api/post/list","/api/upload")
                                 .permitAll()
-                                .requestMatchers(PathRequest.toH2Console()).permitAll()
+//                                .requestMatchers(PathRequest.toH2Console()).permitAll()
                                 .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class); // JwtFilter를 addFilterBefore로 등록했던 JwtSecurityConfig class 적용
