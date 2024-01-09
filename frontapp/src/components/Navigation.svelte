@@ -52,6 +52,7 @@
                     <div class="w-full h-0.5 bg-[#ccc]"></div>
 
                 <li><a href="/post/myList">내 글 목록</a></li>
+                <li><a href="/member/membership">유료 멤버쉽</a> </li>
                 <li><button class="items-start" on:click={fetchLogout}>로그아웃</button></li>
                 {/if}
                 <li><a href="/post/list">전체 글 목록</a></li>

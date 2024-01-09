@@ -57,7 +57,7 @@ public class SecurityConfig {
                         oauth2Login -> oauth2Login.successHandler(customAuthenticationSuccessHandler)
                 )
                 .authorizeHttpRequests(request ->
-                        request.requestMatchers("/member/socialLogin","/api/**","/login/oauth2/code/kakao","/api/logout","/api/login","/api/member/join","/favicon.ico","/api/homelist","/api/post/list","/api/upload")
+                        request.requestMatchers("/confirm","/member/socialLogin","/api/**","/login/oauth2/code/kakao","/api/logout","/api/login","/api/member/join","/favicon.ico","/api/homelist","/api/post/list","/api/upload")
                                 .permitAll()
 //                                .requestMatchers(PathRequest.toH2Console()).permitAll()
                                 .anyRequest().authenticated()

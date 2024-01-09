@@ -25,6 +25,7 @@ public class CustomWebMvcConfig implements WebMvcConfigurer {
         registry.addMapping("/member/socialLogin/kakao")
                 .allowedOrigins("http://localhost:5173")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS");
+        registry.addMapping("/confirm").allowedOrigins("http://localhost:5173");
     }
 
 

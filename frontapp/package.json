@@ -48,8 +48,10 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@tosspayments/payment-widget-sdk": "^0.10.2",
 		"axios": "^1.6.2",
 		"marked": "^11.1.0",
+		"nanoid": "^5.0.4",
 		"openapi-fetch": "^0.8.2",
 		"svelte-routing": "^2.10.0",
 		"svelte-spa-router": "^4.0.0"
